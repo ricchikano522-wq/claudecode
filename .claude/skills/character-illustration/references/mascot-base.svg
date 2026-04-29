@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Chiweenie mascot — base template.
+  Style: hand-drawn watercolor, dotted/broken outlines, flat muted-saturated fills,
+  paper-noise overlay. Lines use #2C2420, never pure black.
+  Drop this into a webpage and tweak pose/expression as needed.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Chiweenie mascot">
+  <defs>
+    <!-- Paper / canvas noise overlay -->
+    <filter id="paperNoise" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 0.18
+                              0 0 0 0 0.14
+                              0 0 0 0 0.10
+                              0 0 0 0.18 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+
+    <!-- Watercolor edge softening -->
+    <filter id="watercolor" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="6"/>
+    </filter>
+
+    <!-- Reusable hand-drawn stroke style -->
+    <style>
+      .ink {
+        fill: none;
+        stroke: #2C2420;
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 8 4 5 5;
+      }
+      .cream { fill: #F2E2BD; filter: url(#watercolor); }
+      .lightBrown { fill: #C68A5C; filter: url(#watercolor); }
+      .dot { fill: #1F1A17; }
+    </style>
+  </defs>
+
+  <!-- Background (off-white) -->
+  <rect width="1200" height="1200" fill="#FAF6EE"/>
+
+  <!-- ======================================================== -->
+  <!-- BODY FILLS — fill first, ink outlines last so lines stay on top -->
+  <!-- ======================================================== -->
+
+  <!-- Body (standing upright on two legs) -->
+  <path class="cream" d="
+    M 600 380
+    C 480 380, 430 470, 430 580
+    L 430 940
+    C 430 990, 460 1020, 510 1020
+    L 540 1020
+    L 540 1080
+    C 540 1110, 560 1120, 590 1120
+    L 640 1120
+    C 670 1120, 690 1110, 690 1080
+    L 690 1020
+    L 720 1020
+    C 770 1020, 800 990, 800 940
+    L 800 580
+    C 800 470, 720 380, 600 380 Z"/>
+
+  <!-- Front paws (held at belly) -->
+  <ellipse class="cream" cx="500" cy="720" rx="55" ry="90"/>
+  <ellipse class="cream" cx="700" cy="720" rx="55" ry="90"/>
+
+  <!-- Head -->
+  <ellipse class="cream" cx="600" cy="280" rx="180" ry="160"/>
+
+  <!-- Snout -->
+  <ellipse class="cream" cx="600" cy="320" rx="80" ry="60"/>
+
+  <!-- Ears (long floppy with light brown accent) -->
+  <path class="lightBrown" d="
+    M 440 220
+    C 380 240, 360 320, 380 400
+    C 400 460, 460 470, 480 420
+    C 490 380, 480 280, 460 240 Z"/>
+  <path class="lightBrown" d="
+    M 760 220
+    C 820 240, 840 320, 820 400
+    C 800 460, 740 470, 720 420
+    C 710 380, 720 280, 740 240 Z"/>
+
+  <!-- Light brown patch on back/saddle -->
+  <path class="lightBrown" d="
+    M 600 430
+    C 550 430, 510 470, 510 540
+    L 510 660
+    C 510 690, 540 710, 580 710
+    L 620 710
+    C 660 710, 690 690, 690 660
+    L 690 540
+    C 690 470, 650 430, 600 430 Z"/>
+
+  <!-- ======================================================== -->
+  <!-- INK OUTLINES (dotted hand-drawn) -->
+  <!-- ======================================================== -->
+
+  <!-- Body outline -->
+  <path class="ink" d="
+    M 600 380
+    C 480 380, 430 470, 430 580
+    L 430 940
+    C 430 990, 460 1020, 510 1020
+    L 540 1020
+    L 540 1080
+    C 540 1110, 560 1120, 590 1120
+    L 640 1120
+    C 670 1120, 690 1110, 690 1080
+    L 690 1020
+    L 720 1020
+    C 770 1020, 800 990, 800 940
+    L 800 580
+    C 800 470, 720 380, 600 380 Z"/>
+
+  <!-- Front paws outline -->
+  <ellipse class="ink" cx="500" cy="720" rx="55" ry="90"/>
+  <ellipse class="ink" cx="700" cy="720" rx="55" ry="90"/>
+
+  <!-- Head outline -->
+  <ellipse class="ink" cx="600" cy="280" rx="180" ry="160"/>
+
+  <!-- Ears outline -->
+  <path class="ink" d="
+    M 440 220
+    C 380 240, 360 320, 380 400
+    C 400 460, 460 470, 480 420"/>
+  <path class="ink" d="
+    M 760 220
+    C 820 240, 840 320, 820 400
+    C 800 460, 740 470, 720 420"/>
+
+  <!-- Eyes (tiny dots) -->
+  <circle class="dot" cx="540" cy="270" r="9"/>
+  <circle class="dot" cx="660" cy="270" r="9"/>
+
+  <!-- Nose (small round) -->
+  <ellipse class="dot" cx="600" cy="320" rx="14" ry="11"/>
+
+  <!-- Mouth — tiny smile -->
+  <path class="ink" d="M 580 350 Q 600 365 620 350" stroke-dasharray="4 3"/>
+
+  <!-- Paper noise overlay across the whole illustration -->
+  <rect width="1200" height="1200" fill="#FAF6EE" filter="url(#paperNoise)" opacity="0.35" style="mix-blend-mode:multiply"/>
+</svg>
