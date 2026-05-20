@@ -109,11 +109,8 @@ export default function Message() {
             {/* Signature */}
             <div className="reveal reveal-delay-2 mt-14 pt-8 border-t border-forest/20">
               <div className="flex flex-col items-end">
-                <p className="font-sans text-light-text-muted text-xs tracking-[0.3em] mb-2">
+                <p className="font-sans text-light-text-muted text-xs tracking-[0.3em]">
                   CocoDesign株式会社
-                </p>
-                <p className="font-serif text-light-text text-lg md:text-xl">
-                  代表　前橋 香乃
                 </p>
               </div>
             </div>

@@ -8,11 +8,10 @@ export default function Hero() {
     title:   useRef<HTMLHeadingElement>(null),
     divider: useRef<HTMLDivElement>(null),
     sub:     useRef<HTMLDivElement>(null),
-    cta:     useRef<HTMLDivElement>(null),
   }
 
   useEffect(() => {
-    const items = [refs.label, refs.title, refs.divider, refs.sub, refs.cta]
+    const items = [refs.label, refs.title, refs.divider, refs.sub]
     items.forEach((r, i) => {
       const el = r.current
       if (!el) return
@@ -158,30 +157,6 @@ export default function Hero() {
           <p>ブランドの「選ばれ続ける仕組み」をつくる会社です。</p>
         </div>
 
-        {/* CTA */}
-        <div ref={refs.cta} className="mt-14 flex flex-wrap items-center gap-6">
-          <a
-            href="mailto:ricchikano522@gmail.com"
-            className="inline-flex items-center gap-3 font-sans text-xs tracking-widest px-9 py-4 transition-all duration-300 text-light-text"
-            style={{ background: '#8B2D3E' }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = '#5A1A28')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = '#8B2D3E')}
-          >
-            お問い合わせはこちら
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-          <a
-            href="#about"
-            className="font-sans text-xs tracking-widest underline underline-offset-4 transition-colors duration-200"
-            style={{ color: '#6B5C60' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#2A6B50')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#6B5C60')}
-          >
-            私たちについて
-          </a>
-        </div>
       </div>
 
       {/* ── Scroll indicator ── */}
