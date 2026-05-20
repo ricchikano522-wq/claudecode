@@ -12,8 +12,8 @@ const navLinks = [
 ]
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -30,11 +30,14 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-wine-deep/96 backdrop-blur-sm border-b border-wine-mid/30'
-            : 'bg-transparent'
-        }`}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
+        style={{
+          background: scrolled
+            ? 'rgba(28, 9, 16, 0.96)'
+            : 'rgba(16, 8, 12, 0.75)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: '1px solid rgba(139,45,62,0.2)',
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
           <div className="flex items-center justify-between h-16 md:h-20">
@@ -63,13 +66,13 @@ export default function Header() {
               <a
                 href="#contact"
                 onClick={(e) => go(e, '#contact')}
-                className="font-sans text-[10px] tracking-widest border border-wine text-wine px-5 py-2 hover:bg-wine hover:text-light-text transition-all duration-200"
+                className="font-sans text-[10px] tracking-widest border border-wine text-wine-light px-5 py-2 hover:bg-wine hover:text-light-text transition-all duration-200"
               >
                 お問い合わせ
               </a>
             </nav>
 
-            {/* Mobile hamburger */}
+            {/* Hamburger */}
             <button
               className="md:hidden flex flex-col gap-1.5 p-2"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -88,24 +91,18 @@ export default function Header() {
             </button>
           </div>
         </div>
-
-        {/* Wine red accent bar at very bottom of header */}
-        <div
-          className={`h-px transition-all duration-500 ${scrolled ? 'opacity-0' : 'opacity-0'}`}
-          style={{ background: 'linear-gradient(90deg, transparent, #8B2D3E 50%, transparent)' }}
-        />
       </header>
 
-      {/* Mobile overlay */}
+      {/* Mobile menu */}
       <div
-        className={`fixed inset-0 z-40 bg-wine-deep flex flex-col justify-center items-center transition-all duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col justify-center items-center transition-all duration-500 md:hidden ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
+        style={{ background: 'rgba(28,9,16,0.98)' }}
       >
-        {/* Decorative cross */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-0 right-0 h-px bg-wine/20" />
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-wine/20" />
+          <div className="absolute top-1/2 left-0 right-0 h-px" style={{ background: 'rgba(139,45,62,0.2)' }} />
+          <div className="absolute left-1/2 top-0 bottom-0 w-px" style={{ background: 'rgba(42,107,80,0.2)' }} />
         </div>
         <nav className="relative z-10 flex flex-col items-center gap-9">
           {navLinks.map((link, i) => (

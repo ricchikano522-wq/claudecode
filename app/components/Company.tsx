@@ -8,9 +8,8 @@ const rows = [
     label: '事業内容',
     value: 'クリエイティブマーケティング支援 / Web・SNSクリエイティブ制作\nデザインスクール運営 / AI活用支援',
   },
-  { label: '所在地', value: '兵庫県神戸市' },
+  { label: '所在地', value: '〒651-0084 兵庫県神戸市中央区磯辺通1丁目1番18号\nカサベラ国際プラザビル707号室' },
   { label: '代表者', value: '前橋 香乃' },
-  { label: 'お問い合わせ', value: 'お問い合わせフォームより受付' },
 ]
 
 export default function Company() {

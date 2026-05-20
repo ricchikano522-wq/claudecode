@@ -71,16 +71,20 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="reveal reveal-delay-3 flex flex-col sm:flex-row gap-4 justify-center">
+          {/* メール受付 */}
+          <div className="reveal reveal-delay-3 flex flex-col items-center gap-6">
             <a
-              href="mailto:info@coco-design.jp"
+              href="mailto:ricchikano522@gmail.com"
               className="btn-wine text-sm tracking-[0.2em] px-12 py-5 justify-center"
             >
-              お問い合わせはこちら
+              メールでお問い合わせ
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
             </a>
+            <p className="font-sans text-light-text-muted text-xs tracking-widest">
+              ricchikano522@gmail.com
+            </p>
           </div>
         </div>
       </div>
