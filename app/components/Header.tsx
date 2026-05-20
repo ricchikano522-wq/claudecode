@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 
 const navLinks = [
-  { label: 'ABOUT', href: '#about' },
+  { label: 'ABOUT',    href: '#about' },
   { label: 'STRENGTH', href: '#strength' },
-  { label: 'SERVICE', href: '#service' },
-  { label: 'MESSAGE', href: '#message' },
-  { label: 'COMPANY', href: '#company' },
-  { label: 'CONTACT', href: '#contact' },
+  { label: 'SERVICE',  href: '#service' },
+  { label: 'MESSAGE',  href: '#message' },
+  { label: 'COMPANY',  href: '#company' },
+  { label: 'CONTACT',  href: '#contact' },
 ]
 
 export default function Header() {
@@ -21,32 +21,29 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     setMenuOpen(false)
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'bg-ink-deep/95 backdrop-blur-sm border-b border-border-dark' : 'bg-transparent'
+          scrolled
+            ? 'bg-wine-deep/96 backdrop-blur-sm border-b border-wine-mid/30'
+            : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <a
-              href="#hero"
-              onClick={(e) => handleNavClick(e, '#hero')}
-              className="flex flex-col leading-none"
-            >
+            <a href="#hero" onClick={(e) => go(e, '#hero')} className="flex items-baseline gap-2">
               <span className="font-serif text-light-text text-base md:text-lg font-bold tracking-wide">
                 CocoDesign
               </span>
-              <span className="font-sans text-light-text-muted text-[10px] tracking-[0.2em] mt-0.5">
+              <span className="font-sans text-light-text-muted text-[10px] tracking-[0.2em]">
                 株式会社
               </span>
             </a>
@@ -57,12 +54,19 @@ export default function Header() {
                 <a
                   key={link.label}
                   href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-sans text-[10px] tracking-[0.25em] text-light-text-muted hover:text-accent transition-colors duration-200"
+                  onClick={(e) => go(e, link.href)}
+                  className="section-label text-[9px] text-light-text-muted hover:text-wine-light transition-colors duration-200"
                 >
                   {link.label}
                 </a>
               ))}
+              <a
+                href="#contact"
+                onClick={(e) => go(e, '#contact')}
+                className="font-sans text-[10px] tracking-widest border border-wine text-wine px-5 py-2 hover:bg-wine hover:text-light-text transition-all duration-200"
+              >
+                お問い合わせ
+              </a>
             </nav>
 
             {/* Mobile hamburger */}
@@ -71,40 +75,46 @@ export default function Header() {
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="メニュー"
             >
-              <span
-                className={`block w-6 h-px bg-light-text transition-all duration-300 ${
-                  menuOpen ? 'rotate-45 translate-y-2' : ''
-                }`}
-              />
-              <span
-                className={`block w-6 h-px bg-light-text transition-all duration-300 ${
-                  menuOpen ? 'opacity-0' : ''
-                }`}
-              />
-              <span
-                className={`block w-6 h-px bg-light-text transition-all duration-300 ${
-                  menuOpen ? '-rotate-45 -translate-y-2' : ''
-                }`}
-              />
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={`block w-6 h-px bg-light-text transition-all duration-300 ${
+                    i === 0 && menuOpen ? 'rotate-45 translate-y-2' :
+                    i === 1 && menuOpen ? 'opacity-0' :
+                    i === 2 && menuOpen ? '-rotate-45 -translate-y-2' : ''
+                  }`}
+                />
+              ))}
             </button>
           </div>
         </div>
+
+        {/* Wine red accent bar at very bottom of header */}
+        <div
+          className={`h-px transition-all duration-500 ${scrolled ? 'opacity-0' : 'opacity-0'}`}
+          style={{ background: 'linear-gradient(90deg, transparent, #8B2D3E 50%, transparent)' }}
+        />
       </header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-ink-deep flex flex-col justify-center items-center transition-all duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 bg-wine-deep flex flex-col justify-center items-center transition-all duration-500 md:hidden ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <nav className="flex flex-col items-center gap-8">
+        {/* Decorative cross */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-0 right-0 h-px bg-wine/20" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-wine/20" />
+        </div>
+        <nav className="relative z-10 flex flex-col items-center gap-9">
           {navLinks.map((link, i) => (
             <a
               key={link.label}
               href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="font-sans text-sm tracking-[0.3em] text-light-text hover:text-accent transition-colors duration-200"
-              style={{ transitionDelay: menuOpen ? `${i * 60}ms` : '0ms' }}
+              onClick={(e) => go(e, link.href)}
+              className="section-label text-xs text-light-text hover:text-wine-light transition-colors duration-200"
+              style={{ transitionDelay: menuOpen ? `${i * 55}ms` : '0ms' }}
             >
               {link.label}
             </a>
