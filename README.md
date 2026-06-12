@@ -81,6 +81,61 @@ YouTube制作・AI講座・案件対応などのタスクを統合管理するNo
 | 撮影可能日 | 火曜・金曜のみ |
 | 週の実質稼働時間 | 約25時間 |
 
+## LINE毎日通知セットアップ
+
+Notionの当日タスクを毎朝LINEに自動送信するスクリプト（`gas/daily_notify.gs`）。
+
+### 必要なもの
+
+| 項目 | 取得場所 |
+|------|---------|
+| LINE Messaging API Channel Access Token | LINE Developers Console |
+| LINE User ID | LINE Developers Console（Webhookでメッセージ送信後に確認） |
+| Notion Integration Token | Notion設定 → インテグレーション |
+
+### セットアップ手順
+
+**Step 1: LINE Messaging API の準備**
+
+1. [LINE Developers Console](https://developers.line.biz/) にアクセス
+2. Providerを作成 → 「Messaging API」チャンネルを作成
+3. チャンネル設定 → **Channel access token** をコピー（`long-lived token`を発行）
+4. 作成したLINEボットを自分のLINEで**友達追加**
+5. Webhook URLを設定（後述のGAS URLを入れる）してメッセージを1通送ると **User ID** が取得できる
+
+**Step 2: Notion Integration の準備**
+
+1. [Notion Integrations](https://www.notion.so/profile/integrations) で新規インテグレーションを作成
+2. **Internal Integration Token** をコピー
+3. 各スケジュールページを開き「接続先」にインテグレーションを追加
+
+**Step 3: Google Apps Script の設定**
+
+1. [Google Apps Script](https://script.google.com/) で新しいプロジェクトを作成
+2. `gas/daily_notify.gs` の内容を貼り付け
+3. `CONFIG` 内の以下を自分の値に変更：
+   ```
+   LINE_CHANNEL_ACCESS_TOKEN: '取得したトークン'
+   LINE_USER_ID: '取得したユーザーID'
+   NOTION_API_TOKEN: '取得したインテグレーショントークン'
+   ```
+4. `testSend()` を実行して動作確認（ログにメッセージが表示される）
+5. `sendDailySchedule()` を実行してLINEに実際に送信されることを確認
+6. `setupDailyTrigger()` を**1回だけ**実行 → 毎朝8時に自動送信が有効になる
+
+**毎月の更新方法**
+
+新しい月のスケジュールページを作成したら `SCHEDULE_PAGES` にページIDを追加：
+
+```javascript
+SCHEDULE_PAGES: {
+  6: '377a1a53c73b815b8468fdd0980af268',
+  7: '新しいページID',  // 追加
+}
+```
+
+---
+
 ## タイムブロック設計（稼働日）
 
 ```
