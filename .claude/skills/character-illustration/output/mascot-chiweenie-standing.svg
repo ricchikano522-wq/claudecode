@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Design-learning site mascot — Cream Chiweenie (Chihuahua x Dachshund)
+  Pose: standing upright on two hind legs (begging pose, modeled after reference photo 5)
+  Style: hand-drawn dotted outlines, watercolor flat fills, paper-noise texture.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" role="img" aria-label="Cream Chiweenie mascot standing upright">
+  <defs>
+    <!-- Canvas / paper noise overlay -->
+    <filter id="paperNoise" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="11" stitchTiles="stitch"/>
+      <feColorMatrix values="0 0 0 0 0.20
+                              0 0 0 0 0.15
+                              0 0 0 0 0.10
+                              0 0 0 0.22 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+
+    <!-- Watercolor edge wobble -->
+    <filter id="watercolor" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="5"/>
+      <feDisplacementMap in="SourceGraphic" scale="5"/>
+    </filter>
+
+    <!-- Subtle fabric weave for fills -->
+    <pattern id="weave" patternUnits="userSpaceOnUse" width="6" height="6">
+      <rect width="6" height="6" fill="transparent"/>
+      <path d="M0 3 H6 M3 0 V6" stroke="#000" stroke-opacity="0.06" stroke-width="0.6"/>
+    </pattern>
+
+    <style>
+      .ink {
+        fill: none;
+        stroke: #2C2420;
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 11 6 7 6;
+      }
+      .ink-fine {
+        fill: none;
+        stroke: #2C2420;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 7 4 5 4;
+      }
+      .cream    { fill: #F2E2BD; filter: url(#watercolor); }
+      .cream-2  { fill: #EBD3A0; filter: url(#watercolor); }
+      .accent   { fill: #E8A06B; filter: url(#watercolor); }
+      .dot      { fill: #1F1A17; }
+      .blush    { fill: #F2A98A; opacity: 0.55; filter: url(#watercolor); }
+    </style>
+  </defs>
+
+  <!-- Off-white background -->
+  <rect width="1000" height="1250" fill="#FAF6EE"/>
+
+  <!-- =========== FILLS =========== -->
+
+  <!-- Tail (curled up behind, light brown tip) -->
+  <path class="cream" d="
+    M 720 720
+    Q 820 660, 830 560
+    Q 835 500, 800 480
+    Q 770 470, 760 510
+    Q 755 560, 720 600 Z"/>
+
+  <!-- Lower body / hind legs standing -->
+  <path class="cream" d="
+    M 380 700
+    C 350 760, 340 880, 360 1020
+    C 370 1090, 410 1140, 470 1150
+    L 540 1150
+    L 540 1190
+    C 540 1210, 555 1220, 580 1220
+    L 620 1220
+    C 645 1220, 660 1210, 660 1190
+    L 660 1150
+    L 720 1150
+    C 770 1140, 800 1090, 800 1020
+    C 810 880, 800 760, 770 700 Z"/>
+
+  <!-- Belly fluff highlight -->
+  <path class="cream-2" d="
+    M 460 870
+    C 440 940, 450 1040, 490 1110
+    C 540 1150, 620 1150, 670 1110
+    C 710 1040, 720 940, 700 870
+    C 660 830, 500 830, 460 870 Z"/>
+
+  <!-- Torso / chest fluff (long fur cascading) -->
+  <path class="cream" d="
+    M 300 540
+    C 280 620, 290 720, 340 800
+    C 380 860, 460 880, 500 870
+    L 660 870
+    C 700 880, 780 860, 820 800
+    C 870 720, 880 620, 860 540
+    C 820 470, 740 440, 580 440
+    C 420 440, 340 470, 300 540 Z"/>
+
+  <!-- Front paws (raised, begging pose) -->
+  <path class="cream-2" d="
+    M 430 720
+    C 405 745, 395 800, 410 850
+    C 420 880, 455 885, 470 860
+    C 480 815, 478 760, 460 720 Z"/>
+  <path class="cream-2" d="
+    M 570 720
+    C 545 745, 535 800, 550 850
+    C 560 880, 595 885, 610 860
+    C 620 815, 618 760, 600 720 Z"/>
+
+  <!-- Chest fur ruffle -->
+  <path class="cream" d="
+    M 410 700
+    C 400 760, 420 820, 460 850
+    L 640 850
+    C 680 820, 700 760, 690 700
+    C 660 670, 440 670, 410 700 Z"/>
+
+  <!-- Head -->
+  <ellipse class="cream" cx="550" cy="340" rx="200" ry="190"/>
+
+  <!-- Snout (narrow, slightly forward) -->
+  <ellipse class="cream-2" cx="550" cy="400" rx="95" ry="75"/>
+
+  <!-- Left ear (long, floppy, swept) -->
+  <path class="cream" d="
+    M 380 250
+    C 320 270, 280 360, 290 470
+    C 300 550, 350 580, 395 555
+    C 415 510, 425 410, 425 320
+    C 420 280, 410 255, 380 250 Z"/>
+
+  <!-- Right ear -->
+  <path class="cream" d="
+    M 720 250
+    C 780 270, 820 360, 810 470
+    C 800 550, 750 580, 705 555
+    C 685 510, 675 410, 675 320
+    C 680 280, 690 255, 720 250 Z"/>
+
+  <!-- Ear inner shadow (subtle warm) -->
+  <path class="accent" opacity="0.35" d="
+    M 360 320
+    C 340 380, 345 460, 380 510
+    C 395 530, 405 525, 410 500
+    C 415 430, 410 360, 395 310 Z"/>
+  <path class="accent" opacity="0.35" d="
+    M 740 320
+    C 760 380, 755 460, 720 510
+    C 705 530, 695 525, 690 500
+    C 685 430, 690 360, 705 310 Z"/>
+
+  <!-- Forehead fluff tuft -->
+  <path class="cream-2" d="
+    M 470 200
+    C 480 175, 510 165, 540 175
+    C 565 165, 595 175, 605 200
+    C 620 220, 615 250, 595 260
+    C 565 245, 525 245, 495 260
+    C 475 250, 470 220, 470 200 Z"/>
+
+  <!-- Cheeks (blush) -->
+  <ellipse class="blush" cx="430" cy="395" rx="38" ry="22"/>
+  <ellipse class="blush" cx="670" cy="395" rx="38" ry="22"/>
+
+  <!-- =========== INK OUTLINES (hand-drawn dotted) =========== -->
+
+  <!-- Tail outline -->
+  <path class="ink-fine" d="
+    M 720 720
+    Q 820 660, 830 560
+    Q 835 500, 800 480
+    Q 770 470, 760 510"/>
+
+  <!-- Lower body outline -->
+  <path class="ink" d="
+    M 380 700
+    C 350 760, 340 880, 360 1020
+    C 370 1090, 410 1140, 470 1150
+    L 540 1150
+    L 540 1190
+    C 540 1210, 555 1220, 580 1220
+    L 620 1220
+    C 645 1220, 660 1210, 660 1190
+    L 660 1150
+    L 720 1150
+    C 770 1140, 800 1090, 800 1020
+    C 810 880, 800 760, 770 700"/>
+
+  <!-- Leg seam (between legs) -->
+  <path class="ink-fine" d="M 600 1150 L 600 1220"/>
+
+  <!-- Torso outline (fluffy chest sides) -->
+  <path class="ink" d="
+    M 305 555
+    C 285 630, 295 720, 345 795
+    C 385 855, 460 875, 500 865
+    M 660 865
+    C 700 875, 775 855, 815 795
+    C 865 720, 875 630, 855 555"/>
+
+  <!-- Front paws outline -->
+  <path class="ink-fine" d="
+    M 430 720
+    C 405 745, 395 800, 410 850
+    C 420 880, 455 885, 470 860"/>
+  <path class="ink-fine" d="
+    M 570 720
+    C 545 745, 535 800, 550 850
+    C 560 880, 595 885, 610 860"/>
+  <!-- Toe lines on paws -->
+  <path class="ink-fine" stroke-dasharray="3 3" d="M 432 855 Q 442 870 452 855"/>
+  <path class="ink-fine" stroke-dasharray="3 3" d="M 572 855 Q 582 870 592 855"/>
+
+  <!-- Chest fluff line -->
+  <path class="ink-fine" d="
+    M 415 705
+    C 405 760, 425 815, 460 845
+    M 685 705
+    C 695 760, 675 815, 640 845"/>
+
+  <!-- Belly cascading fur lines -->
+  <path class="ink-fine" stroke-dasharray="4 5" d="M 480 880 Q 490 970 478 1080"/>
+  <path class="ink-fine" stroke-dasharray="4 5" d="M 580 890 Q 580 1000 580 1100"/>
+  <path class="ink-fine" stroke-dasharray="4 5" d="M 680 880 Q 670 970 682 1080"/>
+
+  <!-- Head outline -->
+  <ellipse class="ink" cx="550" cy="340" rx="200" ry="190"/>
+
+  <!-- Snout outline -->
+  <path class="ink-fine" d="
+    M 462 395
+    Q 470 460, 550 470
+    Q 630 460, 638 395"/>
+
+  <!-- Ear outlines -->
+  <path class="ink" d="
+    M 380 250
+    C 320 270, 280 360, 290 470
+    C 300 550, 350 580, 395 555"/>
+  <path class="ink" d="
+    M 720 250
+    C 780 270, 820 360, 810 470
+    C 800 550, 750 580, 705 555"/>
+
+  <!-- Forehead tuft outline -->
+  <path class="ink-fine" d="
+    M 480 215
+    Q 500 195, 540 200
+    Q 580 195, 600 215"/>
+  <path class="ink-fine" stroke-dasharray="3 4" d="M 510 220 Q 530 240, 550 220 Q 570 240, 590 220"/>
+
+  <!-- Eyes — tiny dots -->
+  <circle class="dot" cx="475" cy="345" r="11"/>
+  <circle class="dot" cx="625" cy="345" r="11"/>
+
+  <!-- Nose — small round -->
+  <ellipse class="dot" cx="550" cy="395" rx="15" ry="12"/>
+
+  <!-- Mouth — tiny smile -->
+  <path class="ink-fine" stroke-dasharray="3 3" d="M 525 425 Q 550 442, 575 425"/>
+  <path class="ink-fine" stroke-dasharray="3 3" d="M 550 412 L 550 422"/>
+
+  <!-- Whisker dots -->
+  <circle class="dot" cx="500" cy="425" r="2.5" opacity="0.7"/>
+  <circle class="dot" cx="600" cy="425" r="2.5" opacity="0.7"/>
+
+  <!-- =========== FABRIC WEAVE OVERLAY (subtle) =========== -->
+  <rect width="1000" height="1250" fill="url(#weave)" opacity="0.6" style="mix-blend-mode:multiply"/>
+
+  <!-- =========== PAPER NOISE OVERLAY =========== -->
+  <rect width="1000" height="1250" fill="#FAF6EE" filter="url(#paperNoise)" opacity="0.32" style="mix-blend-mode:multiply"/>
+
+  <!-- Caption (matching reference style) -->
+  <text x="500" y="1235" text-anchor="middle"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-weight="700" font-size="34" letter-spacing="2"
+        fill="#2C2420">CHIWEENIE</text>
+</svg>

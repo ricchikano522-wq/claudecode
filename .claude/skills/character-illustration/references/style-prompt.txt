@@ -1,0 +1,36 @@
+==========================================
+DEFAULT IMAGE-GEN PROMPT (positive)
+==========================================
+A cute mascot illustration of a cream-colored Chiweenie (Chihuahua x Dachshund mix)
+standing upright on two hind legs, front-facing pose, friendly curious expression,
+hand-drawn watercolor style with visible canvas / paper noise texture,
+thick dark-brown hand-drawn outlines (NOT pure black, dotted and dashed broken stroke quality, slightly hand-trembled lines),
+tiny black dot eyes, small round black nose,
+flat soft colors that are muted but still saturated (no gradients, no shading, no glossy highlights),
+long floppy ears with fluffy tufts and light-brown patches,
+slightly long body, short stubby legs, slim chihuahua-like build with dachshund proportions,
+clean off-white #FAF6EE background,
+illustration for a design-learning website mascot,
+charming children's book aesthetic,
+palette: cream #F2E2BD, light brown accent #C68A5C, dark brown line #2C2420, off-white background #FAF6EE.
+
+==========================================
+NEGATIVE PROMPT
+==========================================
+photorealistic, 3D render, glossy finish, sharp clean vector lines,
+pure black outlines, #000000, anime style, big shiny eyes,
+gradient shading, drop shadow, glitter, sparkles,
+multiple dogs, text, watermark, signature, logo, frame border,
+realistic fur texture, cgi.
+
+==========================================
+VARIATION HOOKS (append to base prompt)
+==========================================
+- "...holding a paintbrush in front paws, color palette swatches floating around" (for color theory lesson)
+- "...sitting at a tiny desk with a laptop showing wireframes" (for UX lesson)
+- "...peeking from behind a large letter A, typography theme" (for typography lesson)
+- "...waving hello, speech bubble that says hi" (for landing hero)
+- "...thinking pose with question mark above head" (for FAQ section)
+
+Always keep: cream Chiweenie, dotted hand-drawn outline, paper-noise texture,
+no pure black, dot eyes, small nose, flat watercolor fills.
