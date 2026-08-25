@@ -53,11 +53,15 @@ description: 「かの｜営業なしで集客するデザイン」専用のYouT
 > さらにYouTube側も次のとおり塞がれているので、粘っても取れない。無駄な試行をせず軽量モードへ即座に切り替える。
 > | 経路 | 結果 |
 > |---|---|
-> | `youtube.com/results?...` を WebFetch | bot保護ページが返る |
-> | チャンネルページ／RSS `/feeds/videos.xml` | `PROVENANCE_REQUIRED` または robots.txt 拒否 |
-> | 個別 `watch?v=` を WebFetch | タイトル・投稿日・チャンネル名は取れるが**再生数と登録者数は返らない**。連続で429 |
+> | `youtube.com/*` を WebFetch | **`EGRESS_BLOCKED`**（2026-08-25 実測。ネットワークポリシーで youtube.com 自体が遮断） |
+> | curl / Playwright で直接アクセス | **CONNECT に 403**。youtube.com に限らず一般の外部ホストは全滅 |
+> | ローカルのChromium（`/opt/pw-browsers`・Playwright導入済み） | **ブラウザは存在するが上記のとおりネットワーク層で止まる** |
+> | WebSearch（`allowed_domains: ["youtube.com"]`） | **これは通る。**タイトル・URL・チャンネル名までは取れる |
 >
-> 3倍判定が必要な日は、デスクトップアプリで「Run this task」→ **On your computer** で実行してもらう。
+> **つまりクラウドセッションでは「ブラウザモードに切り替える」手段が無い。**粘らず軽量モードで走り切る。
+> 3倍判定・コメント欄が必要な日は、次のどちらかで取る。
+> 1. デスクトップアプリで「Run this task」→ **On your computer** で実行してもらう
+> 2. かのさんにスクショを送ってもらう（「人気の動画」タブ／コメント欄／チャンネル詳細の3点が効率が良い）
 
 ---
 
