@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Noto+Serif+JP:wght@500;700&family=Montserrat:wght@800;900&display=block" rel="stylesheet">
+<!--
+  かの × kumo_design型 リールテンプレート（1080×1920）
+  ・?transparent=1 で背景を消して書き出せば、本人の撮影素材に重ねられる
+  ・各要素は data-in / data-out（秒）と data-fx（pop / up / left / right / fade / wipe）で出し入れ
+-->
+<style>
+:root{
+  --orange:#F07A1E; --orange-soft:#FFB27A; --orange-deep:#D9620A;
+  --ink:#1B1714; --panel:rgba(27,23,20,.92); --brown:#4A3426; --white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden}
+body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);position:relative;background:#2a211b}
+body.transparent{background:transparent}
+body.transparent .bgwrap{display:none}
+
+/* ===== 仮背景：暖色のボケた部屋（撮影素材の代わり） ===== */
+.bgwrap{position:absolute;inset:0;overflow:hidden}
+.room{position:absolute;inset:-60px;filter:blur(38px) saturate(1.05);
+  background:
+    linear-gradient(180deg,#e9ddcf 0%,#d9c6b0 38%,#b99878 62%,#7d5e45 100%);}
+.room .win{position:absolute;left:640px;top:120px;width:420px;height:760px;background:#fbf6ee;opacity:.9;border-radius:20px}
+.room .lamp{position:absolute;left:120px;top:160px;width:260px;height:260px;border-radius:50%;background:#fff3dc}
+.room .desk{position:absolute;left:-40px;right:-40px;top:1380px;height:700px;background:#6b4a33}
+.room .plant{position:absolute;left:40px;top:820px;width:240px;height:520px;border-radius:50% 50% 30% 30%;background:#5f6b45;opacity:.75}
+.room .shelf{position:absolute;left:300px;top:700px;width:300px;height:620px;background:#a88866;opacity:.7}
+.bokeh{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,240,215,.75),rgba(255,240,215,0) 70%)}
+.vignette{position:absolute;inset:0;background:radial-gradient(1200px 1500px at 50% 45%,transparent 55%,rgba(30,18,10,.45))}
+
+/* ===== 常設 ===== */
+.vband{position:absolute;right:0;top:250px;writing-mode:vertical-rl;font-weight:900;font-size:30px;letter-spacing:.12em;display:flex;z-index:20}
+.vband span{padding:20px 11px}
+.vband .w{background:#fff;color:var(--ink)}
+.vband .b{background:var(--ink);color:#fff}
+
+/* ===== 共通パーツ ===== */
+.el{position:absolute;will-change:transform,opacity}
+.cx{left:0;right:0;display:flex;justify-content:center}
+/* 話し言葉のテロップ（白ピル） */
+.pill{background:rgba(255,255,255,.96);color:var(--ink);font-weight:900;font-size:56px;padding:16px 40px 20px;border-radius:22px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);letter-spacing:.02em;white-space:nowrap}
+/* 強調テロップ（白文字＋影／キーワードはオレンジ箱） */
+.big{font-weight:900;color:#fff;text-align:center;line-height:1.25;letter-spacing:.02em;
+  text-shadow:0 4px 0 rgba(0,0,0,.25),0 8px 28px rgba(0,0,0,.45)}
+.cx.big{display:block;text-align:center}
+.big .box{display:inline-block;background:var(--orange);color:#fff;padding:0 26px 8px;margin:10px 0;text-shadow:none;
+  box-shadow:0 10px 30px rgba(120,50,0,.35)}
+/* セクション見出し（①〜） */
+.sec{font-weight:900;font-size:120px;color:var(--orange);paint-order:stroke fill;-webkit-text-stroke:18px #fff;
+  filter:drop-shadow(0 8px 16px rgba(60,30,10,.35));white-space:nowrap}
+/* ダークパネル */
+.panel{background:var(--panel);padding:40px 40px 44px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.panel .hd{color:var(--orange-soft);font-weight:900;font-size:46px;text-align:center;margin-bottom:30px;letter-spacing:.03em}
+.panel .hd b{color:#fff}
+.row{display:flex;align-items:center;background:#fff;margin-top:18px;padding:22px 24px;font-weight:900;font-size:44px}
+.row .plus{font-weight:500;font-size:52px;margin-right:22px;color:var(--ink);line-height:1}
+.row .tx{flex:1}
+.row .tag{background:var(--orange);color:#fff;font-size:30px;padding:8px 14px;white-space:nowrap}
+.cmp{display:flex;align-items:center;justify-content:center;gap:28px}
+.cmp .c{width:330px;height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900}
+.cmp .c small{font-size:34px;margin-bottom:8px}
+.cmp .c strong{font-size:76px;line-height:1.1}
+.cmp .l{border:3px solid #8f7f73;color:#fff}
+.cmp .r{background:var(--orange);color:#fff}
+.cmp .ar{color:#cbb9a8;font-size:64px;font-weight:500}
+.panel .ft{color:#fff;font-weight:900;font-size:46px;text-align:center;margin-top:34px}
+.panel .ft em{font-style:normal;color:var(--orange-soft)}
+
+/* スマホモック */
+.phone{width:560px;height:1040px;border-radius:84px;background:#111;padding:22px;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.phone .scr{width:100%;height:100%;border-radius:64px;background:#faf6f0;overflow:hidden;position:relative}
+.phone .notch{position:absolute;left:50%;top:22px;width:170px;height:48px;margin-left:-85px;background:#111;border-radius:30px;z-index:3}
+.prof{padding:120px 40px 0}
+.prof .top{display:flex;align-items:center;gap:30px}
+.prof .av{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,#f7c79e,var(--orange));border:6px solid #fff;box-shadow:0 0 0 4px var(--orange)}
+.prof .st{display:flex;gap:26px;font-weight:700;font-size:26px;color:#555;text-align:center}
+.prof .st b{display:block;font-size:34px;color:#222}
+.prof .nm{margin-top:28px;font-weight:900;font-size:34px}
+.prof .bio{margin-top:12px;font-size:28px;line-height:1.6;color:#333;font-weight:500}
+.prof .bio .hl{background:linear-gradient(transparent 55%,rgba(240,122,30,.45) 55%);font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:34px}
+.grid i{display:block;aspect-ratio:1/1.25}
+.lp{padding:130px 46px 0;font-family:"Noto Serif JP",serif;text-align:center}
+.lp .en{font-family:Montserrat;letter-spacing:.35em;font-size:20px;color:#9a8a7a}
+.lp h3{margin-top:24px;font-size:42px;line-height:1.6;font-weight:700;color:#2b2420}
+.lp hr{border:0;border-top:2px solid #e2d8cc;margin:40px 0}
+.lp p{font-size:26px;line-height:1.9;color:#5b4d42}
+.lp .btn{margin:50px auto 0;display:inline-block;background:var(--orange);color:#fff;font-family:"Noto Sans JP";font-weight:900;font-size:34px;padding:26px 50px;border-radius:999px;box-shadow:0 10px 0 var(--orange-deep)}
+.cursor{position:absolute;width:70px;height:70px;z-index:5}
+.tap{position:absolute;width:120px;height:120px;border-radius:50%;border:6px solid var(--orange);z-index:4}
+
+/* CTA */
+.cta{background:var(--orange);color:#fff;font-weight:900;font-size:46px;padding:30px 56px;border-radius:999px;box-shadow:0 12px 0 var(--orange-deep)}
+.prog{position:absolute;left:0;bottom:0;height:10px;background:var(--orange);z-index:30}
+</style>
+</head>
+<body>
+<div class="bgwrap">
+  <div class="room"><div class="win"></div><div class="lamp"></div><div class="shelf"></div><div class="plant"></div><div class="desk"></div></div>
+  <div id="bokehs"></div>
+  <div class="vignette"></div>
+</div>
+
+<div class="vband"><span class="w">5年間在宅で</span><span class="b">稼ぐデザイナー</span></div>
+
+<!-- ===== 0–3.6s フック ===== -->
+<div class="el cx big" style="top:640px;font-size:64px" data-in="0.15" data-out="3.6" data-fx="up">スキルは身につけたのに</div>
+<div class="el cx big" style="top:760px;font-size:118px" data-in="0.6" data-out="3.6" data-fx="pop"><span class="box">最初のお仕事</span></div>
+<div class="el cx big" style="top:950px;font-size:92px" data-in="1.1" data-out="3.6" data-fx="up">が来ないのはなぜ？</div>
+
+<!-- ===== 3.6–7.4s 話しテロップ ===== -->
+<div class="el cx" style="top:1080px" data-in="3.7" data-out="5.5" data-fx="fade"><div class="pill">原因はスキル不足じゃなくて</div></div>
+<div class="el cx" style="top:1080px" data-in="5.5" data-out="7.4" data-fx="fade"><div class="pill">集客力が、別のスキルだからです</div></div>
+<div class="el cx big" style="top:720px;font-size:84px" data-in="5.6" data-out="7.4" data-fx="pop">デザイン<span style="color:var(--orange-soft)">≠</span>集客力</div>
+
+<!-- ===== 7.4–11.6s 比較パネル ===== -->
+<div class="el" style="left:60px;right:110px;top:300px" data-in="7.5" data-out="11.6" data-fx="wipe">
+  <div class="panel">
+    <div class="hd">学んだあとに<b>止まりやすい</b>ところ</div>
+    <div class="cmp">
+      <div class="c l"><small>デザイン力</small><strong>学んだ</strong></div>
+      <div class="ar">→</div>
+      <div class="c r"><small>集客力</small><strong>これから</strong></div>
+    </div>
+    <div class="ft">集客力は<em>あとから</em>身につけられる</div>
+  </div>
+</div>
+<div class="el cx big" style="top:1010px;font-size:68px" data-in="8.4" data-out="11.6" data-fx="up">ただ、<span class="box">見直すのは3つ</span><br>だけでした。</div>
+
+<!-- ===== 11.6–14.6s チェックリストパネル ===== -->
+<div class="el" style="left:50px;right:100px;top:760px" data-in="11.7" data-out="14.6" data-fx="wipe">
+  <div class="panel">
+    <div class="hd">最初の1件の前に<b>見直した3つ</b></div>
+    <div class="el-row row" data-in="12.1" data-fx="left"><span class="plus">＋</span><span class="tx">何を頼める人か</span><span class="tag">プロフィール</span></div>
+    <div class="el-row row" data-in="12.5" data-fx="left"><span class="plus">＋</span><span class="tx">作品を見てもらう場所</span><span class="tag">実績</span></div>
+    <div class="el-row row" data-in="12.9" data-fx="left"><span class="plus">＋</span><span class="tx">頼みたい人の窓口</span><span class="tag">導線</span></div>
+  </div>
+</div>
+<div class="el cx big" style="top:520px;font-size:76px" data-in="11.8" data-out="14.6" data-fx="up">私が整えたのは<br>これだけです。</div>
+
+<!-- ===== 14.6–17.8s ① ===== -->
+<div class="el cx" style="top:250px" data-in="14.7" data-out="17.8" data-fx="pop"><div class="sec">①頼める内容</div></div>
+<div class="el cx" style="top:460px" data-in="14.9" data-out="17.8" data-fx="up">
+  <div class="phone"><div class="scr"><div class="notch"></div>
+    <div class="prof">
+      <div class="top"><div class="av"></div><div class="st"><div><b>投稿</b>作品集</div><div><b>DM</b>受付中</div></div></div>
+      <div class="nm">かの｜在宅デザイナー</div>
+      <div class="bio"><span class="hl">バナー・LPのデザインを承ります</span><br>在宅5年／ご相談はこちらから↓</div>
+      <div class="grid"><i style="background:#f3d9c2"></i><i style="background:#e8b48a"></i><i style="background:#d9cfc4"></i><i style="background:#c99a74"></i><i style="background:#f0e6da"></i><i style="background:#e49a5c"></i></div>
+    </div>
+  </div></div>
+</div>
+<div class="el cx" style="top:1170px" data-in="15.2" data-out="17.8" data-fx="fade"><div class="pill">「何を頼める人か」を一言で</div></div>
+
+<!-- ===== 17.8–21.0s ② ===== -->
+<div class="el cx" style="top:250px" data-in="17.9" data-out="21.0" data-fx="pop"><div class="sec">②作品の置き場</div></div>
+<div class="el cx" style="top:460px" data-in="18.1" data-out="21.0" data-fx="up">
+  <div class="phone"><div class="scr"><div class="notch"></div>
+    <div class="lp">
+      <div class="en">WORKS</div>
+      <h3>見てもらえる場所に、<br>作品をまとめる。</h3>
+      <hr>
+      <div class="grid" style="margin-top:0">
+        <i style="background:linear-gradient(160deg,#f6e3d0,#e6b892)"></i><i style="background:linear-gradient(160deg,#2f2a26,#5a4a3e)"></i><i style="background:linear-gradient(160deg,#f2efe9,#cfc6ba)"></i>
+        <i style="background:linear-gradient(160deg,#f07a1e,#f7b98a)"></i><i style="background:linear-gradient(160deg,#e9e2d7,#b9a894)"></i><i style="background:linear-gradient(160deg,#c7d0c0,#8a9a80)"></i>
+      </div>
+      <p style="margin-top:30px">バナー／LP／スライド</p>
+    </div>
+  </div></div>
+</div>
+<div class="el cx" style="top:1170px" data-in="18.4" data-out="21.0" data-fx="fade"><div class="pill">作品は、見てもらえる場所へ</div></div>
+
+<!-- ===== 21.0–24.4s ③ ===== -->
+<div class="el cx" style="top:250px" data-in="21.1" data-out="24.4" data-fx="pop"><div class="sec">③連絡の窓口</div></div>
+<div class="el cx" style="top:460px" data-in="21.3" data-out="24.4" data-fx="up">
+  <div class="phone"><div class="scr" style="position:relative"><div class="notch"></div>
+    <div class="lp">
+      <div class="en">CONTACT</div>
+      <h3>デザインのご相談は<br>お気軽にどうぞ。</h3>
+      <hr>
+      <p>バナー1枚からご相談いただけます。<br>内容を伺ってお見積もりします。</p>
+      <div class="btn" id="cbtn">お問い合わせはこちら</div>
+    </div>
+    <div class="tap" id="tap" style="left:200px;top:640px;opacity:0"></div>
+    <svg class="cursor" id="cur" viewBox="0 0 24 24" style="left:420px;top:900px"><path d="M3 2l7 19 2.5-7.5L20 11z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </div></div>
+</div>
+<div class="el cx" style="top:1170px" data-in="21.6" data-out="24.4" data-fx="fade"><div class="pill">頼みたい人が迷わない窓口を</div></div>
+
+<!-- ===== 24.4–30s 締め ===== -->
+<div class="el cx big" style="top:520px;font-size:70px" data-in="24.5" data-out="30.5" data-fx="up">私は</div>
+<div class="el cx big" style="top:620px;font-size:110px" data-in="24.9" data-out="30.5" data-fx="pop"><span class="box">営業をしない道</span></div>
+<div class="el cx big" style="top:810px;font-size:78px" data-in="25.3" data-out="30.5" data-fx="up">を選びました。</div>
+<div class="el cx" style="top:1000px" data-in="26.0" data-out="30.5" data-fx="fade"><div class="pill" style="font-size:42px">働く場所も、受ける仕事も、自分で選べるように</div></div>
+<div class="el cx" style="top:1180px" data-in="27.0" data-out="30.5" data-fx="pop"><div class="cta" id="cta">続きはプロフィールのYouTubeで ▶</div></div>
+
+<div class="prog" id="prog"></div>
+
+<script>
+if (new URLSearchParams(location.search).get('transparent')) document.body.classList.add('transparent');
+
+// ボケ玉
+const B = document.getElementById('bokehs'), bok = [];
+const rnd = (s => () => (s = (s * 9301 + 49297) % 233280) / 233280)(7);
+for (let i = 0; i < 14; i++) {
+  const d = document.createElement('div'); d.className = 'bokeh';
+  const r = 80 + rnd() * 200; Object.assign(d.style, { width: r + 'px', height: r + 'px' });
+  B.appendChild(d); bok.push({ d, x: rnd() * 1080, y: rnd() * 1920, vx: (rnd() - .5) * 14, vy: -6 - rnd() * 10, o: .25 + rnd() * .45 });
+}
+
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+const back = p => { const c = 1.9; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const IN = 0.38, OUT = 0.22;
+
+function fx(el, t, tin, tout, kind) {
+  let p = clamp((t - tin) / IN), q = tout != null ? clamp((t - tout) / OUT) : 0;
+  if (t < tin) { el.style.opacity = 0; return; }
+  let tr = '', op = 1, clip = '';
+  const e = easeOut(p);
+  if (kind === 'pop') { tr = `scale(${0.6 + 0.4 * back(p)})`; op = clamp(p * 3); }
+  else if (kind === 'up') { tr = `translateY(${(1 - e) * 70}px)`; op = e; }
+  else if (kind === 'left') { tr = `translateX(${(1 - e) * -140}px)`; op = e; }
+  else if (kind === 'right') { tr = `translateX(${(1 - e) * 140}px)`; op = e; }
+  else if (kind === 'wipe') { clip = `inset(0 ${(1 - e) * 100}% 0 0)`; }
+  else { op = e; }
+  if (q > 0) { op *= 1 - q; tr += ` translateY(${-q * 30}px)`; }
+  el.style.opacity = op; el.style.transform = tr; el.style.clipPath = clip;
+}
+
+window.seek = (t) => {
+  for (const b of bok) {
+    const x = (b.x + b.vx * t + 1200) % 1200 - 60, y = (b.y + b.vy * t + 2100) % 2100 - 90;
+    Object.assign(b.d.style, { left: x + 'px', top: y + 'px', opacity: b.o });
+  }
+  document.querySelector('.room').style.transform = `scale(${1.04 + t * 0.002}) translateX(${Math.sin(t / 3) * 10}px)`;
+  document.querySelectorAll('.el').forEach(el => fx(el, t, +el.dataset.in, el.dataset.out ? +el.dataset.out : null, el.dataset.fx));
+  document.querySelectorAll('.el-row').forEach(el => fx(el, t, +el.dataset.in, null, el.dataset.fx));
+  // ③のタップ演出
+  const cur = document.getElementById('cur'), tap = document.getElementById('tap'), btn = document.getElementById('cbtn');
+  const m = easeOut(clamp((t - 22.0) / 0.8));
+  cur.style.left = (420 - 150 * m) + 'px'; cur.style.top = (900 - 160 * m) + 'px';
+  const k = clamp((t - 22.9) / 0.5);
+  tap.style.opacity = k > 0 && k < 1 ? 1 - k : 0; tap.style.transform = `scale(${0.4 + k})`;
+  tap.style.left = (cur.offsetLeft - 40) + 'px'; tap.style.top = (cur.offsetTop - 40) + 'px';
+  btn.style.transform = (t > 22.9 && t < 23.1) ? 'scale(.95)' : '';
+  // CTAの鼓動
+  const c = document.getElementById('cta'); const s = t > 28 ? 1 + 0.05 * Math.max(0, Math.sin((t - 28) * Math.PI * 2)) : 1;
+  c.style.transform = `scale(${s})`;
+  document.getElementById('prog').style.width = (t / 30 * 1080) + 'px';
+};
+seek(0);
+</script>
+</body>
+</html>
