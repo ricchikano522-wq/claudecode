@@ -41,8 +41,9 @@ body.preview{background:#777}
   box-shadow:0 10px 30px rgba(60,40,30,.22)}
 .pill.two{top:982px;min-height:130px}
 .pill > span:first-child{position:relative;z-index:7}
-.pill em{font-style:normal;color:#B5513F;font-size:1.08em;padding:0 2px;
-  background:linear-gradient(transparent 64%,rgba(243,178,140,.6) 64%,rgba(243,178,140,.6) 92%,transparent 92%)}
+.ch{display:inline-block;will-change:transform,opacity}
+.pill em{background-repeat:no-repeat !important;font-style:normal;color:#B5513F;font-size:1.08em;padding:0 2px;
+  background:linear-gradient(transparent 64%,rgba(243,178,140,.6) 64%,rgba(243,178,140,.6) 92%,transparent 92%);background-repeat:no-repeat;background-size:0% 100%}
 
 /* ===== 上部見出し（小さなカード） ===== */
 .title{left:50%;transform:translateX(-50%);top:176px;min-width:640px;background:rgba(251,248,243,.95);border-radius:10px;
@@ -220,63 +221,190 @@ const cards = [
   [30.73, 31.73, '03', '3つ目のトラブル', '低単価で受注した', ['#E0B89C', '#F3DEC6', '#B6CFBC']],
 ];
 
-// 対策パネル: [開始, 終了, 見出し, [行...], 何行目まで点灯]
+// 対策パネル: [開始, 2行目が点灯する時刻, 終了, 見出し, [行...]]
 const R1 = ['ココナラなどのサービス経由で依頼', 'デモ課題を納品してもらい<br>技術を確認'];
 const R2 = ['返信が遅すぎる方は<br>予めお断りする', '確認いただく際に期限を設ける'];
 const R3 = ['個人のデザイナーの競合比較', 'セット販売／付加価値の提供などで<br>単価をアップ'];
 const panels = [
-  [11.73, 14.03, 'トラブル①の対策', R1, 1], [14.03, 16.20, 'トラブル①の対策', R1, 2],
-  [24.57, 27.37, 'トラブル②の対策', R2, 1], [27.37, 28.77, 'トラブル②の対策', R2, 2],
-  [38.80, 40.23, 'トラブル③の対策', R3, 1], [40.23, 43.40, 'トラブル③の対策', R3, 2],
+  [11.73, 14.03, 16.20, 'トラブル①の対策', R1],
+  [24.57, 27.37, 28.77, 'トラブル②の対策', R2],
+  [38.80, 40.23, 43.40, 'トラブル③の対策', R3],
 ];
-
 const punches = [[34.70, 36.20]];
+
+// ---------- 動きの部品 ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const ease = p => 1 - Math.pow(1 - p, 3);
+const back = p => { const c = 1.6; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// 文字を1文字ずつ span に分ける（<br>・✦・svg はそのまま）
+function split(el) {
+  const out = [];
+  const walk = n => {
+    for (const c of [...n.childNodes]) {
+      if (c.nodeType === 3) {
+        const f = document.createDocumentFragment();
+        for (const ch of c.textContent) {
+          if (!ch.trim()) { f.appendChild(document.createTextNode(ch)); continue; }
+          const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = ch; f.appendChild(sp); out.push(sp);
+        }
+        c.replaceWith(f);
+      } else if (c.nodeType === 1 && c.tagName !== 'BR' && c.tagName.toLowerCase() !== 'svg' && !c.classList.contains('star')) walk(c);
+    }
+  };
+  walk(el); return out;
+}
+// 1文字ずつ下からふわっと
+function chars(list, t, start, stg = 0.022, dur = 0.26, dy = 18) {
+  list.forEach((s, i) => {
+    const p = clamp((t - start - i * stg) / dur), e = ease(p);
+    s.style.opacity = p; s.style.transform = `translateY(${(1 - e) * dy}px)`;
+  });
+}
+// ✦をゆっくりまたたかせる
+function twinkle(list, t) {
+  list.forEach((s, i) => { const k = 0.82 + 0.22 * Math.sin(t * 3.2 + i * 1.7); s.style.transform = `scale(${k}) rotate(${Math.sin(t * 1.3 + i) * 12}deg)`; });
+}
 
 const root = document.getElementById('root');
 const items = [];
-const add = (t0, t1, html, cls, style = '', anim = false) => {
+const add = (t0, t1, html, cls, style = '') => {
   const d = document.createElement('div'); d.className = 'el ' + cls; d.innerHTML = html; d.style.cssText = style;
-  root.appendChild(d); items.push({ t0, t1, d, anim }); return d;
+  root.appendChild(d); const it = { t0, t1, d }; items.push(it); return it;
 };
-for (const [a, b, h, w, two] of caps) {
+
+// ---------- 字幕テロップ ----------
+const pills = caps.map(([a, b, h, w, two]) => {
   const minW = Math.min(1060, Math.round(w / S + 80));
-  add(a, b, `<span>${h}</span>`, 'pill grain' + (two ? ' two' : ''), `min-width:${minW}px`);
+  const it = add(a, b, `<span>${h}</span>`, 'pill grain' + (two ? ' two' : ''), `min-width:${minW}px`);
+  it.kind = 'pill'; it.chars = split(it.d.firstChild);
+  it.ems = [...it.d.querySelectorAll('em')].map(em => ({ em, first: it.chars.indexOf(em.querySelector('.ch')) }));
+  return it;
+});
+pills.forEach((p, i) => { const q = pills[i - 1]; p.prev = q && Math.abs(q.t1 - p.t0) < 0.05 ? q : null; });
+let measured = false;
+function measure() {
+  for (const p of pills) {
+    p.d.style.display = 'flex'; p.d.style.transform = 'translateX(-50%)';
+    p.rect = { w: p.d.offsetWidth, top: p.d.offsetTop, bottom: p.d.offsetTop + p.d.offsetHeight };
+    p.d.style.display = 'none';
+  }
+  measured = true;
 }
-for (const [a, b, lab, k, t] of titles)
-  add(a, b, `<div class="lab"><i></i>${lab}<i></i></div><div><span class="kick"><b>✦</b>${k}<b>✦</b></span></div><div><span class="ttl">${t}</span></div>` + stars(),
-    'title grain frame', '', true);
-for (const [a, b, hd, rows, on] of panels)
-  add(a, b, `<div class="hd"><span class="kick"><b>✦</b>${hd}<b>✦</b></span></div>` +
-    rows.map((r, i) => `<div class="prow ${i < on ? '' : 'dim'}"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(),
-    'panel grain frame');
+function animPill(p, t) {
+  const c = p.rect, q = p.prev && p.prev.rect, k = ease(clamp((t - p.t0) / 0.26));
+  // 下地は元の字幕を必ず覆う：前の帯より小さくなる時だけなめらかに縮める
+  const w = q && q.w > c.w ? lerp(q.w, c.w, k) : c.w;
+  const top = q && q.top < c.top ? lerp(q.top, c.top, k) : c.top;
+  const bottom = q && q.bottom > c.bottom ? lerp(q.bottom, c.bottom, k) : c.bottom;
+  Object.assign(p.d.style, { width: w + 'px', minWidth: '0', top: top + 'px', height: (bottom - top) + 'px', minHeight: '0' });
+  // 新しく出る時は少し大きめから戻る（縮むので元の字幕は見えない）
+  const pop = q && q.w >= c.w ? 0 : 0.055 * (1 - ease(clamp((t - p.t0) / 0.3)));
+  p.d.style.transform = `translateX(-50%) scale(${1 + pop})`;
+  chars(p.chars, t, p.t0 + 0.03);
+  for (const { em, first } of p.ems) {
+    const st = p.t0 + 0.03 + first * 0.022 + 0.22;
+    em.style.backgroundSize = `${ease(clamp((t - st) / 0.35)) * 100}% 100%`;
+  }
+}
+
+// ---------- 上部見出し ----------
+for (const [a, b, lab, k, tt] of titles) {
+  const it = add(a, b, `<div class="lab"><i></i>${lab}<i></i></div><div><span class="kick"><b>✦</b>${k}<b>✦</b></span></div><div><span class="ttl">${tt}</span></div>` + stars(), 'title grain frame');
+  it.kind = 'title'; it.lines = [...it.d.querySelectorAll('.lab i')]; it.kick = it.d.querySelector('.kick');
+  it.tchars = split(it.d.querySelector('.ttl')); it.stars = [...it.d.querySelectorAll('.star')];
+}
+function animTitle(it, t) {
+  const p = ease(clamp((t - it.t0) / 0.45)), q = ease(clamp((t - (it.t1 - 0.3)) / 0.3));
+  it.d.style.opacity = clamp((t - it.t0) / 0.3) * (1 - q);
+  it.d.style.transform = `translateX(-50%) translateY(${(1 - p) * -26 - q * 14}px)`;
+  it.lines.forEach(l => l.style.width = ease(clamp((t - it.t0 - 0.15) / 0.45)) * 90 + 'px');
+  const kp = ease(clamp((t - it.t0 - 0.18) / 0.3));
+  it.kick.style.opacity = kp; it.kick.style.transform = `scale(${0.9 + 0.1 * kp})`;
+  chars(it.tchars, t, it.t0 + 0.28, 0.045, 0.34, 24);
+  twinkle(it.stars, t);
+}
+
+// ---------- 対策パネル ----------
+for (const [a, sw, b, hd, rows] of panels) {
+  const it = add(a, b, `<div class="hd"><span class="kick"><b>✦</b>${hd}<b>✦</b></span></div>` +
+    rows.map((r, i) => `<div class="prow"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(), 'panel grain frame');
+  it.kind = 'panel'; it.sw = sw; it.kick = it.d.querySelector('.kick'); it.rows = [...it.d.querySelectorAll('.prow')];
+  it.nos = [...it.d.querySelectorAll('.no')]; it.stars = [...it.d.querySelectorAll('.star')];
+}
+function animPanel(it, t) {
+  it.d.style.transform = `scale(${1 + 0.04 * (1 - ease(clamp((t - it.t0) / 0.3)))})`;
+  const kp = ease(clamp((t - it.t0 - 0.05) / 0.3));
+  it.kick.style.opacity = kp; it.kick.style.transform = `translateY(${(1 - kp) * 12}px)`;
+  // 1行目：左からすっと
+  const r0 = ease(clamp((t - it.t0 - 0.15) / 0.4));
+  it.rows[0].style.opacity = r0; it.rows[0].style.transform = `translateX(${(1 - r0) * -46}px)`;
+  it.nos[0].style.transform = `scale(${0.6 + 0.4 * back(clamp((t - it.t0 - 0.2) / 0.4))})`;
+  // 2行目：先に薄く出て、話題が移ったら点灯
+  const r1 = ease(clamp((t - it.t0 - 0.35) / 0.4)), on = ease(clamp((t - it.sw) / 0.35));
+  it.rows[1].style.opacity = r1 * (0.3 + 0.7 * on);
+  it.rows[1].style.transform = `translateX(${(1 - r1) * -46 + Math.sin(on * Math.PI) * 10}px)`;
+  it.nos[1].style.transform = `scale(${t >= it.sw ? 0.6 + 0.4 * back(clamp((t - it.sw) / 0.4)) : 1})`;
+  twinkle(it.stars, t);
+}
+
+// ---------- 章カード ----------
 const ill = document.getElementById('illust').innerHTML;
-for (const [a, b, no, jp, sub, c] of cards)
-  add(a, b, `<div class="bg" style="background:${c[1]}"><b style="left:-120px;top:-60px;width:820px;height:820px;background:${c[0]}"></b><b style="right:-160px;top:620px;width:760px;height:760px;background:${c[2]}"></b><b style="left:120px;bottom:-200px;width:900px;height:700px;background:${c[1]}"></b></div>
+for (const [a, b, no, jp, sub, c] of cards) {
+  const it = add(a, b, `<div class="bg" style="background:${c[1]}"><b style="left:-120px;top:-60px;width:820px;height:820px;background:${c[0]}"></b><b style="right:-160px;top:620px;width:760px;height:760px;background:${c[2]}"></b><b style="left:120px;bottom:-200px;width:900px;height:700px;background:${c[1]}"></b></div>
     <div class="tex"></div><div class="tex2"></div>
     <div class="head"><i></i>FREELANCE ✦<i></i></div>
     <div class="en">Trouble</div><div class="no">${no}</div>
     <div class="jp">${jp}</div><div class="sub"><span><b>✦</b>${sub}<b>✦</b></span></div>${ill}`, 'card');
-for (const [a, b] of punches)
-  add(a, b, `<div class="orb"></div><div class="t"><div class="s">相場の</div><div class="b">15<small>分の</small>1</div></div>
-    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`,
-    'punch', '', true);
+  const q = s => it.d.querySelector(s);
+  Object.assign(it, { kind: 'card', blobs: [...it.d.querySelectorAll('.bg b')], lines: [...it.d.querySelectorAll('.head i')],
+    en: q('.en'), no: q('.no'), jpc: split(q('.jp')), sub: q('.sub'), ill: q('svg.ill'), sparks: [...it.d.querySelectorAll('svg.ill use')] });
+}
+function animCard(it, t) {
+  const u = t - it.t0;
+  it.blobs.forEach((b, i) => b.style.transform = `translate(${Math.sin(u * 1.4 + i * 2) * 50}px,${Math.cos(u * 1.1 + i) * 40}px)`);
+  it.lines.forEach(l => l.style.width = ease(clamp(u / 0.5)) * 160 + 'px');
+  const e1 = ease(clamp((u - 0.05) / 0.35));
+  it.en.style.opacity = e1; it.en.style.transform = `translateY(${(1 - e1) * 24}px)`;
+  const e2 = clamp((u - 0.12) / 0.4);
+  it.no.style.opacity = clamp(e2 * 2); it.no.style.transform = `scale(${0.82 + 0.18 * back(e2)})`;
+  chars(it.jpc, t, it.t0 + 0.25, 0.035, 0.3, 20);
+  const e3 = ease(clamp((u - 0.45) / 0.3));
+  it.sub.style.opacity = e3; it.sub.style.transform = `translateY(${(1 - e3) * 16}px)`;
+  const e4 = ease(clamp((u - 0.1) / 0.6));
+  it.ill.style.opacity = e4; it.ill.style.transform = `translateY(${(1 - e4) * 90 + Math.sin(u * 2) * 6}px)`;
+}
+
+// ---------- 強調（15分の1） ----------
+for (const [a, b] of punches) {
+  const it = add(a, b, `<div class="orb"></div><div class="t"><div class="s">相場の</div><div class="b">15<small>分の</small>1</div></div>
+    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`, 'punch');
+  Object.assign(it, { kind: 'punch', orb: it.d.querySelector('.orb'), sc: split(it.d.querySelector('.s')), bc: split(it.d.querySelector('.b')), st: it.d.querySelector('svg.stars') });
+}
+function animPunch(it, t) {
+  const u = t - it.t0, out = ease(clamp((t - (it.t1 - 0.25)) / 0.25));
+  it.d.style.opacity = 1 - out;
+  it.orb.style.transform = `scale(${(0.3 + 0.7 * back(clamp(u / 0.5))) * (1 + 0.015 * Math.sin(u * 4))})`;
+  it.orb.style.opacity = clamp(u / 0.2);
+  chars(it.sc, t, it.t0 + 0.2, 0.05, 0.3, 14);
+  chars(it.bc, t, it.t0 + 0.3, 0.06, 0.32, 30);
+  it.st.style.opacity = clamp((u - 0.3) / 0.3); it.st.style.transform = `rotate(${Math.sin(u * 2) * 3}deg) scale(${1 + 0.04 * Math.sin(u * 5)})`;
+}
 
 const FR = 1 / 30;
+const anim = { pill: animPill, title: animTitle, panel: animPanel, card: animCard, punch: animPunch };
 window.seek = (t) => {
+  if (!measured) measure();
   for (const it of items) {
     // 1フレーム手前から表示して、元字幕が一瞬でも見えないようにする
     const on = t >= it.t0 - FR && t < it.t1 - FR * 0.5;
-    it.d.style.display = on ? (it.d.classList.contains('pill') ? 'flex' : 'block') : 'none';
-    if (on && it.anim) {
-      const p = Math.min(1, (t - it.t0) / 0.4), e = 1 - Math.pow(1 - p, 3);
-      it.d.style.opacity = Math.min(1, p * 2);
-      const base = it.d.classList.contains('title') ? 'translateX(-50%) ' : '';
-      it.d.style.transform = base + `translateY(${(1 - e) * 30}px)`;
-    }
+    it.d.style.display = on ? (it.kind === 'pill' ? 'flex' : 'block') : 'none';
+    if (on) anim[it.kind](it, t);
   }
   document.getElementById('prog').style.width = (t / DUR * 1080) + 'px';
 };
-seek(0);
+document.fonts.ready.then(() => { measured = false; seek(0); });
 </script>
 </body>
 </html>
