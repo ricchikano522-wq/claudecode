@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=block" rel="stylesheet">
+<!--
+  v4：フィード投稿のトンマナ（くすみカラー・明朝・細線＋✦）× ノイズグラデーション
+  実写素材（788×1400 → 1080×1920）に重ねるテロップ層。背景は透明で書き出す。
+  元動画の字幕・Point枠を覆うサイズ・位置は v3 と同じ。
+-->
+<style>
+:root{
+  --ivory:#FBF8F3; --ivory2:#F3ECE3; --line:rgba(130,90,75,.42);
+  --slate:#3B3F42; --sub:#6E7477;
+  --rose:#BA685C; --rose-soft:#E2A596; --sage:#8DB0A5; --blue:#97B5C7; --terra:#C9805A; --peach:#F3B892;
+  --serif:"Shippori Mincho B1","Yu Mincho","YuMincho",serif;
+  --sans:"Yu Gothic","YuGothic","Zen Kaku Gothic New",sans-serif;
+  --en:"Cormorant Garamond",serif;
+  --noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .22  0 0 0 0 .19  0 0 0 0 .17  0 0 0 1.4 -.55'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>");
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+body{font-family:var(--sans);color:var(--slate);position:relative;font-variant-numeric:lining-nums}
+body.preview{background:#777}
+.el{position:absolute;display:none}
+
+/* ノイズ（要素の中だけに乗せる） */
+.grain{isolation:isolate}
+.grain::after{content:"";position:absolute;inset:0;background-image:var(--noise);opacity:.55;pointer-events:none;border-radius:inherit;z-index:5}
+
+/* 細い内枠＋四隅の✦（フィード投稿の枠と同じ作り） */
+.frame::before{content:"";position:absolute;inset:12px;border:1.5px solid var(--line);border-radius:inherit;pointer-events:none;z-index:4}
+.star{position:absolute;width:22px;height:22px;z-index:6;color:var(--rose)}
+.star svg{display:block;width:100%;height:100%}
+.star.tl{left:2px;top:2px}.star.tr{right:2px;top:2px}.star.bl{left:2px;bottom:2px}.star.br{right:2px;bottom:2px}
+
+/* ===== 話しテロップ ===== */
+.pill{left:50%;transform:translateX(-50%);top:1012px;min-height:100px;display:flex;align-items:center;justify-content:center;
+  background:var(--ivory);border-radius:56px;padding:16px 52px 20px;text-align:center;white-space:nowrap;
+  font-weight:700;font-size:46px;line-height:1.4;letter-spacing:.04em;color:var(--slate);
+  box-shadow:0 10px 30px rgba(60,40,30,.22)}
+.pill.two{top:982px;min-height:130px}
+.pill > span:first-child{position:relative;z-index:7}
+.ch{display:inline-block;will-change:transform,opacity}
+.pill em{background-repeat:no-repeat !important;font-style:normal;color:#B5513F;font-size:1.08em;padding:0 2px;
+  background:linear-gradient(transparent 64%,rgba(243,178,140,.6) 64%,rgba(243,178,140,.6) 92%,transparent 92%);background-repeat:no-repeat;background-size:0% 100%}
+
+/* ===== 上部見出し（小さなカード） ===== */
+.title{left:50%;transform:translateX(-50%);top:176px;min-width:640px;background:rgba(251,248,243,.95);border-radius:10px;
+  padding:30px 64px 36px;text-align:center;box-shadow:0 12px 34px rgba(60,40,30,.2)}
+.title > div{position:relative;z-index:7}
+.lab{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--en);font-weight:600;font-size:26px;letter-spacing:.26em;color:#7A999B}
+.lab i{display:block;width:90px;height:1.5px;background:var(--line)}
+.kick{display:inline-flex;align-items:center;gap:12px;margin-top:14px;font-size:30px;font-weight:700;color:var(--slate);
+  background:var(--ivory2);padding:6px 22px 8px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
+.kick b{color:var(--rose);font-size:20px}
+.ttl{display:block;margin-top:12px;font-family:var(--serif);font-weight:800;font-size:84px;line-height:1.2;color:var(--slate);white-space:nowrap;letter-spacing:.02em}
+.ttl em{font-style:normal;color:var(--rose)}
+
+/* ===== 対策パネル（元のPoint枠を覆う） ===== */
+.panel{left:70px;right:70px;top:770px;min-height:380px;background:var(--ivory);border-radius:12px;padding:40px 52px 42px;box-shadow:0 18px 44px rgba(60,40,30,.25)}
+.panel > div{position:relative;z-index:7}
+.panel .hd{text-align:center;margin-bottom:10px}
+.panel .hd .kick{margin-top:0;font-size:32px}
+.prow{display:flex;align-items:flex-start;gap:24px;padding:20px 4px 18px;border-bottom:1.5px dashed var(--line)}
+.prow:last-child{border-bottom:0}
+.prow .no{font-family:var(--en);font-style:italic;font-weight:600;font-size:58px;line-height:.9;color:var(--rose);min-width:62px}
+.prow .tx{font-size:37px;font-weight:700;line-height:1.45;color:var(--slate)}
+.prow.dim{opacity:.32}
+
+/* ===== 章カード（元の黒画面を覆う・全面） ===== */
+.card{left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.card .bg{position:absolute;inset:-80px;filter:blur(60px)}
+.card .bg b{position:absolute;border-radius:50%}
+.card .tex{position:absolute;inset:0;background-image:var(--noise);opacity:.75}
+.card .tex2{position:absolute;inset:0;background-image:var(--noise);opacity:.35;transform:scale(1.7);transform-origin:0 0}
+.card .head{position:absolute;left:0;right:0;top:250px;display:flex;align-items:center;justify-content:center;gap:18px;font-family:var(--en);font-weight:600;font-size:32px;letter-spacing:.3em;color:var(--sub)}
+.card .head i{display:block;width:160px;height:1.5px;background:var(--line)}
+.card .en{position:absolute;left:0;right:0;top:440px;text-align:center;font-family:var(--en);font-style:italic;font-weight:500;font-size:120px;color:var(--rose);letter-spacing:.02em}
+.card .no{position:absolute;left:0;right:0;top:540px;text-align:center;font-family:var(--en);font-weight:500;font-size:300px;line-height:1;color:var(--slate)}
+.card .jp{position:absolute;left:0;right:0;top:880px;text-align:center;font-family:var(--serif);font-weight:800;font-size:66px;color:var(--slate);letter-spacing:.06em}
+.card .sub{position:absolute;left:0;right:0;top:1000px;text-align:center}
+.card .sub span{display:inline-flex;gap:14px;align-items:center;font-size:40px;font-weight:700;color:var(--slate);background:rgba(251,248,243,.7);
+  padding:10px 30px 14px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
+.card .sub b{color:var(--rose);font-size:24px}
+.card svg.ill{position:absolute;left:0;top:1120px;width:1080px;height:800px}
+
+/* ===== 強調（ノイズの円＋明朝） ===== */
+.punch{left:0;right:0;top:470px;height:600px}
+.punch .orb{position:absolute;left:50%;top:0;width:560px;height:560px;margin-left:-280px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,#F9E1CE 0%,var(--peach) 45%,var(--rose-soft) 100%);opacity:.96}
+.punch .orb::after{content:"";position:absolute;inset:0;border-radius:50%;background-image:var(--noise);opacity:.8}
+.punch .t{position:absolute;left:0;right:0;top:150px;text-align:center;z-index:3}
+.punch .s{font-size:44px;font-weight:700;color:var(--slate);letter-spacing:.1em}
+.punch .b{font-family:var(--serif);font-weight:800;font-size:150px;line-height:1.15;color:var(--slate)}
+.punch .b small{font-size:96px}
+.punch .stars{position:absolute;inset:0}
+
+.prog{position:absolute;left:0;bottom:0;height:6px;background:var(--rose);display:block;opacity:.9}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- ざらっとした質感：ノイズで形を点描のように削る -->
+    <filter id="grainy" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="na"/>
+      <feComposite in="SourceGraphic" in2="na" operator="in" result="g"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="n2"/>
+      <feColorMatrix in="n2" type="matrix" values="0 0 0 0 .2  0 0 0 0 .15  0 0 0 0 .12  0 0 0 .9 -.35" result="dk"/>
+      <feComposite in="dk" in2="g" operator="in" result="dkin"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="dkin"/></feMerge>
+    </filter>
+    <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BFD8C2"/><stop offset=".6" stop-color="#7DA796"/><stop offset="1" stop-color="#4E7A6C" stop-opacity=".6"/></linearGradient>
+    <linearGradient id="leafG2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBCFA6"/><stop offset="1" stop-color="#C29A68" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="mugG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFDF9"/><stop offset=".55" stop-color="#EFE4D8"/><stop offset="1" stop-color="#CC9C7E"/></linearGradient>
+    <linearGradient id="mugIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E553B"/><stop offset="1" stop-color="#C47E5A"/></linearGradient>
+    <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#839DAD"/><stop offset="1" stop-color="#4A6070"/></linearGradient>
+    <linearGradient id="lapScr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9EEF0"/><stop offset="1" stop-color="#B9C6CD"/></linearGradient>
+    <linearGradient id="baseG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7CED2"/><stop offset="1" stop-color="#8D989E"/></linearGradient>
+    <radialGradient id="orbG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FAE0CB"/><stop offset="1" stop-color="#EC9D77" stop-opacity=".75"/></radialGradient>
+    <path id="spark" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+  </defs>
+</svg>
+
+<template id="illust">
+  <svg class="ill" viewBox="0 0 1080 800">
+    <g filter="url(#grainy)">
+      <circle cx="840" cy="210" r="150" fill="url(#orbG)" opacity=".85"/>
+      <circle cx="190" cy="520" r="110" fill="url(#orbG)" opacity=".6"/>
+      <!-- 葉 -->
+      <g transform="translate(70,330) rotate(-28)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/><path d="M8,0 L320,0" stroke="#4E7A6C" stroke-width="3" opacity=".45"/></g>
+      <g transform="translate(120,470) rotate(-62)"><path d="M0,0 C60,-80 170,-80 240,0 C170,80 60,80 0,0Z" fill="url(#leafG2)"/></g>
+      <g transform="translate(960,560) rotate(200)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/></g>
+      <!-- ノートPC -->
+      <g transform="translate(330,250)">
+        <rect x="20" y="0" width="420" height="270" rx="18" fill="url(#lapG)"/>
+        <rect x="40" y="20" width="380" height="230" rx="8" fill="url(#lapScr)"/>
+        <rect x="70" y="56" width="170" height="16" rx="8" fill="#BA685C" opacity=".7"/>
+        <rect x="70" y="90" width="250" height="10" rx="5" fill="#7A999B" opacity=".6"/>
+        <rect x="70" y="112" width="210" height="10" rx="5" fill="#7A999B" opacity=".6"/>
+        <rect x="70" y="150" width="110" height="70" rx="6" fill="#F3B892"/>
+        <rect x="196" y="150" width="110" height="70" rx="6" fill="#8DB0A5"/>
+        <path d="M-30,280 L490,280 L460,312 L0,312Z" fill="url(#baseG)"/>
+      </g>
+      <!-- マグ -->
+      <g transform="translate(700,380)">
+        <ellipse cx="90" cy="232" rx="150" ry="26" fill="#D9CBBE"/>
+        <path d="M170,70 C250,70 250,170 165,170" fill="none" stroke="#E2D3C6" stroke-width="26"/>
+        <path d="M0,20 L0,190 C0,230 180,230 180,190 L180,20Z" fill="url(#mugG)"/>
+        <ellipse cx="90" cy="20" rx="90" ry="22" fill="#F6EEE6"/>
+        <ellipse cx="90" cy="24" rx="76" ry="15" fill="url(#mugIn)"/>
+      </g>
+    </g>
+    <!-- 湯気と✦は線で -->
+    <path d="M770,330 C750,300 790,280 770,250 M810,325 C790,290 835,270 812,232" fill="none" stroke="#B5A69A" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+    <use href="#spark" transform="translate(300,170) scale(26)" fill="#BA685C"/>
+    <use href="#spark" transform="translate(340,215) scale(13)" fill="#BA685C"/>
+    <use href="#spark" transform="translate(980,330) scale(18)" fill="#7A999B"/>
+  </svg>
+</template>
+
+<div id="root"></div>
+<div class="prog" id="prog"></div>
+<script src="timeline.js"></script>
+<script>
+if (new URLSearchParams(location.search).get('preview')) document.body.classList.add('preview');
+const TL = window.TIMELINE;
+const DUR = TL.duration;
+const S = (TL.srcWidth || 1080) / 1080; // 元動画px → 出力px は 1/S 倍
+const STAR = '<svg viewBox="-1 -1 2 2"><use href="#spark" fill="currentColor"/></svg>';
+const stars = () => ['tl','tr','bl','br'].map(p => `<span class="star ${p}">${STAR}</span>`).join('');
+const caps = TL.caps || [], titles = TL.titles || [], cards = TL.cards || [], panels = TL.panels || [], punches = TL.punches || [];
+
+// ---------- 動きの部品 ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const ease = p => 1 - Math.pow(1 - p, 3);
+const back = p => { const c = 1.6; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+
+// 文字を1文字ずつ span に分ける（<br>・✦・svg はそのまま）
+function split(el) {
+  const out = [];
+  const walk = n => {
+    for (const c of [...n.childNodes]) {
+      if (c.nodeType === 3) {
+        const f = document.createDocumentFragment();
+        for (const ch of c.textContent) {
+          if (!ch.trim()) { f.appendChild(document.createTextNode(ch)); continue; }
+          const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = ch; f.appendChild(sp); out.push(sp);
+        }
+        c.replaceWith(f);
+      } else if (c.nodeType === 1 && c.tagName !== 'BR' && c.tagName.toLowerCase() !== 'svg' && !c.classList.contains('star')) walk(c);
+    }
+  };
+  walk(el); return out;
+}
+// 1文字ずつ下からふわっと
+function chars(list, t, start, stg = 0.022, dur = 0.26, dy = 18) {
+  list.forEach((s, i) => {
+    const p = clamp((t - start - i * stg) / dur), e = ease(p);
+    s.style.opacity = p; s.style.transform = `translateY(${(1 - e) * dy}px)`;
+  });
+}
+// ✦をゆっくりまたたかせる
+function twinkle(list, t) {
+  list.forEach((s, i) => { const k = 0.82 + 0.22 * Math.sin(t * 3.2 + i * 1.7); s.style.transform = `scale(${k}) rotate(${Math.sin(t * 1.3 + i) * 12}deg)`; });
+}
+
+const root = document.getElementById('root');
+const items = [];
+const add = (t0, t1, html, cls, style = '') => {
+  const d = document.createElement('div'); d.className = 'el ' + cls; d.innerHTML = html; d.style.cssText = style;
+  root.appendChild(d); const it = { t0, t1, d }; items.push(it); return it;
+};
+
+// ---------- 字幕テロップ ----------
+const pills = caps.map(([a, b, h, w, two]) => {
+  const minW = w ? Math.min(1060, Math.round(w / S + 80)) : 0;
+  const it = add(a, b, `<span>${h}</span>`, 'pill grain' + (two ? ' two' : ''), minW ? `min-width:${minW}px` : '');
+  it.kind = 'pill'; it.chars = split(it.d.firstChild);
+  it.ems = [...it.d.querySelectorAll('em')].map(em => ({ em, first: it.chars.indexOf(em.querySelector('.ch')) }));
+  return it;
+});
+pills.forEach((p, i) => { const q = pills[i - 1]; p.prev = q && Math.abs(q.t1 - p.t0) < 0.05 ? q : null; });
+let measured = false;
+function measure() {
+  for (const p of pills) {
+    p.d.style.display = 'flex'; p.d.style.transform = 'translateX(-50%)';
+    p.rect = { w: p.d.offsetWidth, top: p.d.offsetTop, bottom: p.d.offsetTop + p.d.offsetHeight };
+    p.d.style.display = 'none';
+  }
+  measured = true;
+}
+function animPill(p, t) {
+  const c = p.rect, q = p.prev && p.prev.rect, k = ease(clamp((t - p.t0) / 0.26));
+  // 下地は元の字幕を必ず覆う：前の帯より小さくなる時だけなめらかに縮める
+  const w = q && q.w > c.w ? lerp(q.w, c.w, k) : c.w;
+  const top = q && q.top < c.top ? lerp(q.top, c.top, k) : c.top;
+  const bottom = q && q.bottom > c.bottom ? lerp(q.bottom, c.bottom, k) : c.bottom;
+  Object.assign(p.d.style, { width: w + 'px', minWidth: '0', top: top + 'px', height: (bottom - top) + 'px', minHeight: '0' });
+  // 新しく出る時は少し大きめから戻る（縮むので元の字幕は見えない）
+  const pop = q && q.w >= c.w ? 0 : 0.055 * (1 - ease(clamp((t - p.t0) / 0.3)));
+  p.d.style.transform = `translateX(-50%) scale(${1 + pop})`;
+  chars(p.chars, t, p.t0 + 0.03);
+  for (const { em, first } of p.ems) {
+    const st = p.t0 + 0.03 + first * 0.022 + 0.22;
+    em.style.backgroundSize = `${ease(clamp((t - st) / 0.35)) * 100}% 100%`;
+  }
+}
+
+// ---------- 上部見出し ----------
+for (const [a, b, lab, k, tt] of titles) {
+  const it = add(a, b, `<div class="lab"><i></i>${lab}<i></i></div><div><span class="kick"><b>✦</b>${k}<b>✦</b></span></div><div><span class="ttl">${tt}</span></div>` + stars(), 'title grain frame');
+  it.kind = 'title'; it.lines = [...it.d.querySelectorAll('.lab i')]; it.kick = it.d.querySelector('.kick');
+  it.tchars = split(it.d.querySelector('.ttl')); it.stars = [...it.d.querySelectorAll('.star')];
+}
+function animTitle(it, t) {
+  const p = ease(clamp((t - it.t0) / 0.45)), q = ease(clamp((t - (it.t1 - 0.3)) / 0.3));
+  it.d.style.opacity = clamp((t - it.t0) / 0.3) * (1 - q);
+  it.d.style.transform = `translateX(-50%) translateY(${(1 - p) * -26 - q * 14}px)`;
+  it.lines.forEach(l => l.style.width = ease(clamp((t - it.t0 - 0.15) / 0.45)) * 90 + 'px');
+  const kp = ease(clamp((t - it.t0 - 0.18) / 0.3));
+  it.kick.style.opacity = kp; it.kick.style.transform = `scale(${0.9 + 0.1 * kp})`;
+  chars(it.tchars, t, it.t0 + 0.28, 0.045, 0.34, 24);
+  twinkle(it.stars, t);
+}
+
+// ---------- 対策パネル ----------
+for (const [a, sw, b, hd, rows] of panels) {
+  const it = add(a, b, `<div class="hd"><span class="kick"><b>✦</b>${hd}<b>✦</b></span></div>` +
+    rows.map((r, i) => `<div class="prow"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(), 'panel grain frame');
+  it.kind = 'panel'; it.sw = sw; it.kick = it.d.querySelector('.kick'); it.rows = [...it.d.querySelectorAll('.prow')];
+  it.nos = [...it.d.querySelectorAll('.no')]; it.stars = [...it.d.querySelectorAll('.star')];
+}
+function animPanel(it, t) {
+  it.d.style.transform = `scale(${1 + 0.04 * (1 - ease(clamp((t - it.t0) / 0.3)))})`;
+  const kp = ease(clamp((t - it.t0 - 0.05) / 0.3));
+  it.kick.style.opacity = kp; it.kick.style.transform = `translateY(${(1 - kp) * 12}px)`;
+  // 1行目：左からすっと
+  const r0 = ease(clamp((t - it.t0 - 0.15) / 0.4));
+  it.rows[0].style.opacity = r0; it.rows[0].style.transform = `translateX(${(1 - r0) * -46}px)`;
+  it.nos[0].style.transform = `scale(${0.6 + 0.4 * back(clamp((t - it.t0 - 0.2) / 0.4))})`;
+  // 2行目：先に薄く出て、話題が移ったら点灯
+  const r1 = ease(clamp((t - it.t0 - 0.35) / 0.4)), on = ease(clamp((t - it.sw) / 0.35));
+  it.rows[1].style.opacity = r1 * (0.3 + 0.7 * on);
+  it.rows[1].style.transform = `translateX(${(1 - r1) * -46 + Math.sin(on * Math.PI) * 10}px)`;
+  it.nos[1].style.transform = `scale(${t >= it.sw ? 0.6 + 0.4 * back(clamp((t - it.sw) / 0.4)) : 1})`;
+  twinkle(it.stars, t);
+}
+
+// ---------- 章カード ----------
+const ill = document.getElementById('illust').innerHTML;
+for (const [a, b, no, jp, sub, c] of cards) {
+  const it = add(a, b, `<div class="bg" style="background:${c[1]}"><b style="left:-120px;top:-60px;width:820px;height:820px;background:${c[0]}"></b><b style="right:-160px;top:620px;width:760px;height:760px;background:${c[2]}"></b><b style="left:120px;bottom:-200px;width:900px;height:700px;background:${c[1]}"></b></div>
+    <div class="tex"></div><div class="tex2"></div>
+    <div class="head"><i></i>FREELANCE ✦<i></i></div>
+    <div class="en">Trouble</div><div class="no">${no}</div>
+    <div class="jp">${jp}</div><div class="sub"><span><b>✦</b>${sub}<b>✦</b></span></div>${ill}`, 'card');
+  const q = s => it.d.querySelector(s);
+  Object.assign(it, { kind: 'card', blobs: [...it.d.querySelectorAll('.bg b')], lines: [...it.d.querySelectorAll('.head i')],
+    en: q('.en'), no: q('.no'), jpc: split(q('.jp')), sub: q('.sub'), ill: q('svg.ill'), sparks: [...it.d.querySelectorAll('svg.ill use')] });
+}
+function animCard(it, t) {
+  const u = t - it.t0;
+  it.blobs.forEach((b, i) => b.style.transform = `translate(${Math.sin(u * 1.4 + i * 2) * 50}px,${Math.cos(u * 1.1 + i) * 40}px)`);
+  it.lines.forEach(l => l.style.width = ease(clamp(u / 0.5)) * 160 + 'px');
+  const e1 = ease(clamp((u - 0.05) / 0.35));
+  it.en.style.opacity = e1; it.en.style.transform = `translateY(${(1 - e1) * 24}px)`;
+  const e2 = clamp((u - 0.12) / 0.4);
+  it.no.style.opacity = clamp(e2 * 2); it.no.style.transform = `scale(${0.82 + 0.18 * back(e2)})`;
+  chars(it.jpc, t, it.t0 + 0.25, 0.035, 0.3, 20);
+  const e3 = ease(clamp((u - 0.45) / 0.3));
+  it.sub.style.opacity = e3; it.sub.style.transform = `translateY(${(1 - e3) * 16}px)`;
+  const e4 = ease(clamp((u - 0.1) / 0.6));
+  it.ill.style.opacity = e4; it.ill.style.transform = `translateY(${(1 - e4) * 90 + Math.sin(u * 2) * 6}px)`;
+}
+
+// ---------- 強調（15分の1） ----------
+for (const [a, b, small, big] of punches) {
+  const it = add(a, b, `<div class="orb"></div><div class="t"><div class="s">${small || ''}</div><div class="b">${big}</div></div>
+    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`, 'punch');
+  Object.assign(it, { kind: 'punch', orb: it.d.querySelector('.orb'), sc: split(it.d.querySelector('.s')), bc: split(it.d.querySelector('.b')), st: it.d.querySelector('svg.stars') });
+}
+function animPunch(it, t) {
+  const u = t - it.t0, out = ease(clamp((t - (it.t1 - 0.25)) / 0.25));
+  it.d.style.opacity = 1 - out;
+  it.orb.style.transform = `scale(${(0.3 + 0.7 * back(clamp(u / 0.5))) * (1 + 0.015 * Math.sin(u * 4))})`;
+  it.orb.style.opacity = clamp(u / 0.2);
+  chars(it.sc, t, it.t0 + 0.2, 0.05, 0.3, 14);
+  chars(it.bc, t, it.t0 + 0.3, 0.06, 0.32, 30);
+  it.st.style.opacity = clamp((u - 0.3) / 0.3); it.st.style.transform = `rotate(${Math.sin(u * 2) * 3}deg) scale(${1 + 0.04 * Math.sin(u * 5)})`;
+}
+
+const FR = 1 / 30;
+const anim = { pill: animPill, title: animTitle, panel: animPanel, card: animCard, punch: animPunch };
+window.seek = (t) => {
+  if (!measured) measure();
+  for (const it of items) {
+    // 1フレーム手前から表示して、元字幕が一瞬でも見えないようにする
+    const on = t >= it.t0 - FR && t < it.t1 - FR * 0.5;
+    it.d.style.display = on ? (it.kind === 'pill' ? 'flex' : 'block') : 'none';
+    if (on) anim[it.kind](it, t);
+  }
+  document.getElementById('prog').style.width = (t / DUR * 1080) + 'px';
+};
+document.fonts.ready.then(() => { measured = false; seek(0); });
+</script>
+</body>
+</html>
