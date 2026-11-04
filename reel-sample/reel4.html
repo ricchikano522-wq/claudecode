@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=block" rel="stylesheet">
+<!--
+  v4：フィード投稿のトンマナ（くすみカラー・明朝・細線＋✦）× ノイズグラデーション
+  実写素材（788×1400 → 1080×1920）に重ねるテロップ層。背景は透明で書き出す。
+  元動画の字幕・Point枠を覆うサイズ・位置は v3 と同じ。
+-->
+<style>
+:root{
+  --ivory:#FBF8F3; --ivory2:#F3ECE3; --line:rgba(110,92,82,.38);
+  --slate:#3B3F42; --sub:#6E7477;
+  --rose:#B5776F; --rose-soft:#D8AFA6; --sage:#9FB1AE; --blue:#A9B9C3; --terra:#C08A6E; --peach:#EDC3A5;
+  --serif:"Shippori Mincho B1","Yu Mincho","YuMincho",serif;
+  --sans:"Yu Gothic","YuGothic","Zen Kaku Gothic New",sans-serif;
+  --en:"Cormorant Garamond",serif;
+  --noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .22  0 0 0 0 .19  0 0 0 0 .17  0 0 0 1.4 -.55'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>");
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+body{font-family:var(--sans);color:var(--slate);position:relative;font-variant-numeric:lining-nums}
+body.preview{background:#777}
+.el{position:absolute;display:none}
+
+/* ノイズ（要素の中だけに乗せる） */
+.grain{isolation:isolate}
+.grain::after{content:"";position:absolute;inset:0;background-image:var(--noise);opacity:.55;pointer-events:none;border-radius:inherit;z-index:5}
+
+/* 細い内枠＋四隅の✦（フィード投稿の枠と同じ作り） */
+.frame::before{content:"";position:absolute;inset:12px;border:1.5px solid var(--line);border-radius:inherit;pointer-events:none;z-index:4}
+.star{position:absolute;width:22px;height:22px;z-index:6;color:var(--rose)}
+.star svg{display:block;width:100%;height:100%}
+.star.tl{left:2px;top:2px}.star.tr{right:2px;top:2px}.star.bl{left:2px;bottom:2px}.star.br{right:2px;bottom:2px}
+
+/* ===== 話しテロップ ===== */
+.pill{left:50%;transform:translateX(-50%);top:1012px;min-height:100px;display:flex;align-items:center;justify-content:center;
+  background:var(--ivory);border-radius:14px;padding:16px 48px 20px;text-align:center;white-space:nowrap;
+  font-weight:700;font-size:46px;line-height:1.4;letter-spacing:.04em;color:var(--slate);
+  box-shadow:0 10px 30px rgba(60,40,30,.22)}
+.pill.two{top:982px;min-height:130px}
+.pill > span:first-child{position:relative;z-index:7}
+.pill em{font-style:normal;color:var(--rose)}
+
+/* ===== 上部見出し（小さなカード） ===== */
+.title{left:50%;transform:translateX(-50%);top:176px;min-width:640px;background:rgba(251,248,243,.95);border-radius:10px;
+  padding:30px 64px 36px;text-align:center;box-shadow:0 12px 34px rgba(60,40,30,.2)}
+.title > div{position:relative;z-index:7}
+.lab{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--en);font-weight:600;font-size:26px;letter-spacing:.26em;color:#8C9A9B}
+.lab i{display:block;width:90px;height:1.5px;background:var(--line)}
+.kick{display:inline-flex;align-items:center;gap:12px;margin-top:14px;font-size:30px;font-weight:700;color:var(--slate);
+  background:var(--ivory2);padding:6px 22px 8px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
+.kick b{color:var(--rose);font-size:20px}
+.ttl{display:block;margin-top:12px;font-family:var(--serif);font-weight:800;font-size:84px;line-height:1.2;color:var(--slate);white-space:nowrap;letter-spacing:.02em}
+.ttl em{font-style:normal;color:var(--rose)}
+
+/* ===== 対策パネル（元のPoint枠を覆う） ===== */
+.panel{left:70px;right:70px;top:770px;min-height:380px;background:var(--ivory);border-radius:12px;padding:40px 52px 42px;box-shadow:0 18px 44px rgba(60,40,30,.25)}
+.panel > div{position:relative;z-index:7}
+.panel .hd{text-align:center;margin-bottom:10px}
+.panel .hd .kick{margin-top:0;font-size:32px}
+.prow{display:flex;align-items:flex-start;gap:24px;padding:20px 4px 18px;border-bottom:1.5px dashed var(--line)}
+.prow:last-child{border-bottom:0}
+.prow .no{font-family:var(--en);font-style:italic;font-weight:600;font-size:58px;line-height:.9;color:var(--rose);min-width:62px}
+.prow .tx{font-size:37px;font-weight:700;line-height:1.45;color:var(--slate)}
+.prow.dim{opacity:.32}
+
+/* ===== 章カード（元の黒画面を覆う・全面） ===== */
+.card{left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.card .bg{position:absolute;inset:-80px;filter:blur(60px)}
+.card .bg b{position:absolute;border-radius:50%}
+.card .tex{position:absolute;inset:0;background-image:var(--noise);opacity:.75}
+.card .tex2{position:absolute;inset:0;background-image:var(--noise);opacity:.35;transform:scale(1.7);transform-origin:0 0}
+.card .head{position:absolute;left:0;right:0;top:250px;display:flex;align-items:center;justify-content:center;gap:18px;font-family:var(--en);font-weight:600;font-size:32px;letter-spacing:.3em;color:var(--sub)}
+.card .head i{display:block;width:160px;height:1.5px;background:var(--line)}
+.card .en{position:absolute;left:0;right:0;top:440px;text-align:center;font-family:var(--en);font-style:italic;font-weight:500;font-size:120px;color:var(--rose);letter-spacing:.02em}
+.card .no{position:absolute;left:0;right:0;top:540px;text-align:center;font-family:var(--en);font-weight:500;font-size:300px;line-height:1;color:var(--slate)}
+.card .jp{position:absolute;left:0;right:0;top:880px;text-align:center;font-family:var(--serif);font-weight:800;font-size:66px;color:var(--slate);letter-spacing:.06em}
+.card .sub{position:absolute;left:0;right:0;top:1000px;text-align:center}
+.card .sub span{display:inline-flex;gap:14px;align-items:center;font-size:40px;font-weight:700;color:var(--slate);background:rgba(251,248,243,.7);
+  padding:10px 30px 14px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
+.card .sub b{color:var(--rose);font-size:24px}
+.card svg.ill{position:absolute;left:0;top:1120px;width:1080px;height:800px}
+
+/* ===== 強調（ノイズの円＋明朝） ===== */
+.punch{left:0;right:0;top:470px;height:600px}
+.punch .orb{position:absolute;left:50%;top:0;width:560px;height:560px;margin-left:-280px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,#F7E3D3 0%,var(--peach) 45%,var(--rose-soft) 100%);opacity:.96}
+.punch .orb::after{content:"";position:absolute;inset:0;border-radius:50%;background-image:var(--noise);opacity:.8}
+.punch .t{position:absolute;left:0;right:0;top:150px;text-align:center;z-index:3}
+.punch .s{font-size:44px;font-weight:700;color:var(--slate);letter-spacing:.1em}
+.punch .b{font-family:var(--serif);font-weight:800;font-size:150px;line-height:1.15;color:var(--slate)}
+.punch .b small{font-size:96px}
+.punch .stars{position:absolute;inset:0}
+
+.prog{position:absolute;left:0;bottom:0;height:6px;background:var(--rose);display:block;opacity:.9}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- ざらっとした質感：ノイズで形を点描のように削る -->
+    <filter id="grainy" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="4" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="na"/>
+      <feComposite in="SourceGraphic" in2="na" operator="in" result="g"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="n2"/>
+      <feColorMatrix in="n2" type="matrix" values="0 0 0 0 .2  0 0 0 0 .15  0 0 0 0 .12  0 0 0 .9 -.35" result="dk"/>
+      <feComposite in="dk" in2="g" operator="in" result="dkin"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="dkin"/></feMerge>
+    </filter>
+    <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D6C6"/><stop offset=".6" stop-color="#8FA79E"/><stop offset="1" stop-color="#5F7C74" stop-opacity=".6"/></linearGradient>
+    <linearGradient id="leafG2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4D3B8"/><stop offset="1" stop-color="#B8A07C" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="mugG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFDF9"/><stop offset=".55" stop-color="#EFE4D8"/><stop offset="1" stop-color="#C9A792"/></linearGradient>
+    <linearGradient id="mugIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A5E48"/><stop offset="1" stop-color="#B98568"/></linearGradient>
+    <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E9DA6"/><stop offset="1" stop-color="#55626B"/></linearGradient>
+    <linearGradient id="lapScr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9EEF0"/><stop offset="1" stop-color="#B9C6CD"/></linearGradient>
+    <linearGradient id="baseG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7CED2"/><stop offset="1" stop-color="#8D989E"/></linearGradient>
+    <radialGradient id="orbG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#F8E5D4"/><stop offset="1" stop-color="#E6A98A" stop-opacity=".75"/></radialGradient>
+    <path id="spark" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+  </defs>
+</svg>
+
+<template id="illust">
+  <svg class="ill" viewBox="0 0 1080 800">
+    <g filter="url(#grainy)">
+      <circle cx="840" cy="210" r="150" fill="url(#orbG)" opacity=".85"/>
+      <circle cx="190" cy="520" r="110" fill="url(#orbG)" opacity=".6"/>
+      <!-- 葉 -->
+      <g transform="translate(70,330) rotate(-28)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/><path d="M8,0 L320,0" stroke="#5F7C74" stroke-width="3" opacity=".45"/></g>
+      <g transform="translate(120,470) rotate(-62)"><path d="M0,0 C60,-80 170,-80 240,0 C170,80 60,80 0,0Z" fill="url(#leafG2)"/></g>
+      <g transform="translate(960,560) rotate(200)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/></g>
+      <!-- ノートPC -->
+      <g transform="translate(330,250)">
+        <rect x="20" y="0" width="420" height="270" rx="18" fill="url(#lapG)"/>
+        <rect x="40" y="20" width="380" height="230" rx="8" fill="url(#lapScr)"/>
+        <rect x="70" y="56" width="170" height="16" rx="8" fill="#B5776F" opacity=".7"/>
+        <rect x="70" y="90" width="250" height="10" rx="5" fill="#8C9A9B" opacity=".6"/>
+        <rect x="70" y="112" width="210" height="10" rx="5" fill="#8C9A9B" opacity=".6"/>
+        <rect x="70" y="150" width="110" height="70" rx="6" fill="#EDC3A5"/>
+        <rect x="196" y="150" width="110" height="70" rx="6" fill="#9FB1AE"/>
+        <path d="M-30,280 L490,280 L460,312 L0,312Z" fill="url(#baseG)"/>
+      </g>
+      <!-- マグ -->
+      <g transform="translate(700,380)">
+        <ellipse cx="90" cy="232" rx="150" ry="26" fill="#D9CBBE"/>
+        <path d="M170,70 C250,70 250,170 165,170" fill="none" stroke="#E2D3C6" stroke-width="26"/>
+        <path d="M0,20 L0,190 C0,230 180,230 180,190 L180,20Z" fill="url(#mugG)"/>
+        <ellipse cx="90" cy="20" rx="90" ry="22" fill="#F6EEE6"/>
+        <ellipse cx="90" cy="24" rx="76" ry="15" fill="url(#mugIn)"/>
+      </g>
+    </g>
+    <!-- 湯気と✦は線で -->
+    <path d="M770,330 C750,300 790,280 770,250 M810,325 C790,290 835,270 812,232" fill="none" stroke="#B5A69A" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+    <use href="#spark" transform="translate(300,170) scale(26)" fill="#B5776F"/>
+    <use href="#spark" transform="translate(340,215) scale(13)" fill="#B5776F"/>
+    <use href="#spark" transform="translate(980,330) scale(18)" fill="#8C9A9B"/>
+  </svg>
+</template>
+
+<div id="root"></div>
+<div class="prog" id="prog"></div>
+<script>
+if (new URLSearchParams(location.search).get('preview')) document.body.classList.add('preview');
+const DUR = 59.31;
+const S = 788 / 1080;
+const STAR = '<svg viewBox="-1 -1 2 2"><use href="#spark" fill="currentColor"/></svg>';
+const stars = () => ['tl','tr','bl','br'].map(p => `<span class="star ${p}">${STAR}</span>`).join('');
+
+// 話しテロップ: [開始, 終了, 文言(HTML), 元字幕の幅(元動画px), 2行か]
+const caps = [
+  [0.00, 1.27, '今でこそ独立して', 460],
+  [1.27, 2.67, '年商1000万のデザイナーになれたけど', 665],
+  [2.67, 5.03, 'いろんなトラブルを経験してきました', 645],
+  [6.07, 7.87, 'コーダーに<em>納品直前で飛ばれて</em>', 528],
+  [7.87, 9.27, '困ってしまったことがあります', 530],
+  [9.27, 10.57, '外注者に飛ばれるなどは', 420],
+  [10.57, 11.73, '意外とあるあるなので', 400],
+  [16.20, 17.93, 'などして外注するのがおすすめです', 610],
+  [19.13, 20.77, 'クライアントの返答が遅すぎて', 540],
+  [20.77, 22.97, '制作期間が<br><em>半年長引いて</em>しまったことも', 510, 1],
+  [22.97, 24.57, 'この時の対策としては', 372],
+  [28.77, 29.53, 'などすることで', 270],
+  [29.53, 30.73, '改善されていきました', 392],
+  [31.73, 33.80, '相場を調べず<br><em>低単価で受注</em>したこと', 370, 1],
+  [33.80, 34.70, '相場を調べずに', 270],
+  [34.70, 36.20, '<em>15分の1</em>の価格で', 295],
+  [36.20, 37.77, 'LP案件を受注してしまったことも', 582],
+  [37.77, 38.80, 'その後の対策として', 358],
+  [43.40, 45.03, 'などで低単価を回避できました', 600],
+  [45.03, 46.60, 'そもそも私がこれらの失敗を', 498],
+  [46.60, 47.73, '経験してしまったのは', 488],
+  [47.73, 49.00, '<em>独学で</em>クライアントワークを', 498],
+  [49.00, 50.17, '実践してしまったからです', 488],
+  [50.17, 51.80, 'トラブルなんてそもそも起きないでしょ', 686],
+  [51.80, 52.80, 'っていう風に思ってても', 372],
+  [52.80, 54.10, '個人でお仕事をする場合は', 456],
+  [54.10, 55.60, '責任は全て自分になるので', 466],
+  [55.60, 56.63, 'いざという時のために', 382],
+  [56.63, 58.03, '<em>サポートしてもらえる環境</em>に', 498],
+  [58.03, DUR, '身を置くことが大切です', 372],
+];
+
+// 上部見出し: [開始, 終了, 英字ラベル, キッカー, 見出し]
+const titles = [
+  [0.00, 5.03, 'FREELANCE', '独立して経験した', '<em>トラブル</em>3選'],
+  [6.07, 17.93, 'TROUBLE 01', 'トラブル①', '<em>外注先</em>に飛ばれた'],
+  [19.13, 30.73, 'TROUBLE 02', 'トラブル②', '<em>返答</em>が遅すぎた'],
+  [31.73, 45.03, 'TROUBLE 03', 'トラブル③', '<em>低単価</em>で受注した'],
+  [45.03, 55.60, 'LOOKING BACK', '振り返ると', '失敗の<em>原因</em>は'],
+  [55.60, DUR, 'FOR YOU', 'だからこそ', '<em>大切</em>なこと'],
+];
+
+// 章カード: [開始, 終了, 番号, 日本語, サブ, 背景色3つ]
+const cards = [
+  [5.03, 6.07, '01', '1つ目のトラブル', '外注先に飛ばれた', ['#C9D6CF', '#F1DCC8', '#AFC2C4']],
+  [17.93, 19.13, '02', '2つ目のトラブル', '返答が遅すぎた', ['#E8CFC3', '#F4E7D6', '#BFC9CF']],
+  [30.73, 31.73, '03', '3つ目のトラブル', '低単価で受注した', ['#D9C2B0', '#EFE3D2', '#C7D0C4']],
+];
+
+// 対策パネル: [開始, 終了, 見出し, [行...], 何行目まで点灯]
+const R1 = ['ココナラなどのサービス経由で依頼', 'デモ課題を納品してもらい<br>技術を確認'];
+const R2 = ['返信が遅すぎる方は<br>予めお断りする', '確認いただく際に期限を設ける'];
+const R3 = ['個人のデザイナーの競合比較', 'セット販売／付加価値の提供などで<br>単価をアップ'];
+const panels = [
+  [11.73, 14.03, 'トラブル①の対策', R1, 1], [14.03, 16.20, 'トラブル①の対策', R1, 2],
+  [24.57, 27.37, 'トラブル②の対策', R2, 1], [27.37, 28.77, 'トラブル②の対策', R2, 2],
+  [38.80, 40.23, 'トラブル③の対策', R3, 1], [40.23, 43.40, 'トラブル③の対策', R3, 2],
+];
+
+const punches = [[34.70, 36.20]];
+
+const root = document.getElementById('root');
+const items = [];
+const add = (t0, t1, html, cls, style = '', anim = false) => {
+  const d = document.createElement('div'); d.className = 'el ' + cls; d.innerHTML = html; d.style.cssText = style;
+  root.appendChild(d); items.push({ t0, t1, d, anim }); return d;
+};
+for (const [a, b, h, w, two] of caps) {
+  const minW = Math.min(1060, Math.round(w / S + 80));
+  add(a, b, `<span>${h}</span>` + stars(), 'pill grain frame' + (two ? ' two' : ''), `min-width:${minW}px`);
+}
+for (const [a, b, lab, k, t] of titles)
+  add(a, b, `<div class="lab"><i></i>${lab}<i></i></div><div><span class="kick"><b>✦</b>${k}<b>✦</b></span></div><div><span class="ttl">${t}</span></div>` + stars(),
+    'title grain frame', '', true);
+for (const [a, b, hd, rows, on] of panels)
+  add(a, b, `<div class="hd"><span class="kick"><b>✦</b>${hd}<b>✦</b></span></div>` +
+    rows.map((r, i) => `<div class="prow ${i < on ? '' : 'dim'}"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(),
+    'panel grain frame');
+const ill = document.getElementById('illust').innerHTML;
+for (const [a, b, no, jp, sub, c] of cards)
+  add(a, b, `<div class="bg" style="background:${c[1]}"><b style="left:-120px;top:-60px;width:820px;height:820px;background:${c[0]}"></b><b style="right:-160px;top:620px;width:760px;height:760px;background:${c[2]}"></b><b style="left:120px;bottom:-200px;width:900px;height:700px;background:${c[1]}"></b></div>
+    <div class="tex"></div><div class="tex2"></div>
+    <div class="head"><i></i>FREELANCE ✦<i></i></div>
+    <div class="en">Trouble</div><div class="no">${no}</div>
+    <div class="jp">${jp}</div><div class="sub"><span><b>✦</b>${sub}<b>✦</b></span></div>${ill}`, 'card');
+for (const [a, b] of punches)
+  add(a, b, `<div class="orb"></div><div class="t"><div class="s">相場の</div><div class="b">15<small>分の</small>1</div></div>
+    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#B5776F"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#8C9A9B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#B5776F"/></svg>`,
+    'punch', '', true);
+
+const FR = 1 / 30;
+window.seek = (t) => {
+  for (const it of items) {
+    // 1フレーム手前から表示して、元字幕が一瞬でも見えないようにする
+    const on = t >= it.t0 - FR && t < it.t1 - FR * 0.5;
+    it.d.style.display = on ? (it.d.classList.contains('pill') ? 'flex' : 'block') : 'none';
+    if (on && it.anim) {
+      const p = Math.min(1, (t - it.t0) / 0.4), e = 1 - Math.pow(1 - p, 3);
+      it.d.style.opacity = Math.min(1, p * 2);
+      const base = it.d.classList.contains('title') ? 'translateX(-50%) ' : '';
+      it.d.style.transform = base + `translateY(${(1 - e) * 30}px)`;
+    }
+  }
+  document.getElementById('prog').style.width = (t / DUR * 1080) + 'px';
+};
+seek(0);
+</script>
+</body>
+</html>
