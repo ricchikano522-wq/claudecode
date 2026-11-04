@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Montserrat:wght@800;900&display=block" rel="stylesheet">
+<!--
+  実写素材（788×1400 → 1080×1920）に重ねるテロップ層。背景は透明で書き出す。
+  元動画に焼き込まれた字幕・Point枠を、同じ位置で覆い隠すサイズにしてある。
+-->
+<style>
+:root{--orange:#F07A1E;--orange-soft:#FFB27A;--orange-deep:#D9620A;--ink:#1B1714;--panel:rgba(27,23,20,.98);--beige1:#F6EEE3;--beige2:#E9D8C3}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
+body{font-family:"Noto Sans JP",sans-serif;position:relative}
+body.preview{background:#555}
+.el{position:absolute;display:none}
+
+/* 話しテロップ（白ピル） */
+.pill{left:50%;transform:translateX(-50%);top:1012px;min-height:100px;display:flex;align-items:center;justify-content:center;
+  background:#fff;color:var(--ink);font-weight:900;font-size:50px;line-height:1.3;text-align:center;
+  padding:16px 36px 20px;border-radius:24px;box-shadow:0 8px 26px rgba(0,0,0,.22);white-space:nowrap}
+.pill.two{top:982px;min-height:130px}
+.pill em{font-style:normal;color:var(--orange)}
+
+/* 上部の見出し */
+.title{left:0;right:0;top:210px;text-align:center}
+.title .k{display:inline-block;background:var(--ink);color:#fff;font-weight:900;font-size:46px;padding:10px 26px 14px;margin-bottom:14px}
+.title .t{display:block;font-weight:900;font-size:112px;line-height:1.1;color:var(--orange);paint-order:stroke fill;-webkit-text-stroke:18px #fff;
+  filter:drop-shadow(0 8px 16px rgba(40,20,5,.4));white-space:nowrap}
+
+/* 対策パネル（元のPoint枠を覆う） */
+.panel{left:70px;right:70px;top:770px;min-height:380px;background:var(--panel);padding:30px 34px 36px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.panel .hd{color:var(--orange-soft);font-weight:900;font-size:42px;text-align:center;margin-bottom:18px}
+.panel .hd b{color:#fff}
+.row{display:flex;align-items:center;background:#fff;margin-top:16px;padding:18px 20px;font-weight:900;font-size:38px;line-height:1.35;color:var(--ink)}
+.row .tag{background:var(--orange);color:#fff;font-family:Montserrat;font-size:26px;padding:8px 12px;margin-right:18px;white-space:nowrap;align-self:center}
+.row.dim{opacity:.45}
+
+/* 章タイトルカード（元の黒画面を覆う） */
+.card{left:0;top:0;width:1080px;height:1920px;background:linear-gradient(170deg,var(--beige1),var(--beige2));text-align:center}
+.card .en{position:absolute;left:0;right:0;top:640px;font-family:Montserrat;font-weight:900;font-size:56px;letter-spacing:.3em;color:var(--orange)}
+.card .no{position:absolute;left:0;right:0;top:700px;font-family:Montserrat;font-weight:900;font-size:300px;line-height:1;color:var(--orange);
+  paint-order:stroke fill;-webkit-text-stroke:20px #fff;filter:drop-shadow(0 10px 18px rgba(80,40,10,.25))}
+.card .jp{position:absolute;left:0;right:0;top:1060px;font-weight:900;font-size:64px;color:var(--ink)}
+.card .sub{position:absolute;left:0;right:0;top:1180px}
+.card .sub span{display:inline-block;background:var(--ink);color:#fff;font-weight:900;font-size:52px;padding:14px 34px 18px}
+
+/* 強調（大きい白文字＋オレンジ箱） */
+.punch{left:0;right:0;top:640px;text-align:center;font-weight:900;color:#fff;font-size:70px;line-height:1.3;
+  text-shadow:0 4px 0 rgba(0,0,0,.25),0 8px 28px rgba(0,0,0,.5)}
+.punch .box{display:inline-block;background:var(--orange);padding:0 26px 10px;font-size:150px;text-shadow:none;box-shadow:0 12px 30px rgba(120,50,0,.35)}
+
+.prog{position:absolute;left:0;bottom:0;height:10px;background:var(--orange);display:block}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="prog" id="prog"></div>
+<script>
+if (new URLSearchParams(location.search).get('preview')) document.body.classList.add('preview');
+const DUR = 59.31;
+const S = 788 / 1080; // 元動画px → 出力px は 1/S 倍
+
+// 話しテロップ: [開始, 終了, 文言(HTML), 元字幕の幅(元動画px), 2行か]
+const caps = [
+  [0.00, 1.27, '今でこそ独立して', 460],
+  [1.27, 2.67, '年商1000万のデザイナーになれたけど', 665],
+  [2.67, 5.03, 'いろんなトラブルを経験してきました', 645],
+  [6.07, 7.87, 'コーダーに<em>納品直前で飛ばれて</em>', 528],
+  [7.87, 9.27, '困ってしまったことがあります', 530],
+  [9.27, 10.57, '外注者に飛ばれるなどは', 420],
+  [10.57, 11.73, '意外とあるあるなので', 400],
+  [16.20, 17.93, 'などして外注するのがおすすめです', 610],
+  [19.13, 20.77, 'クライアントの返答が遅すぎて', 540],
+  [20.77, 22.97, '制作期間が<br><em>半年長引いて</em>しまったことも', 510, 1],
+  [22.97, 24.57, 'この時の対策としては', 372],
+  [28.77, 29.53, 'などすることで', 270],
+  [29.53, 30.73, '改善されていきました', 392],
+  [31.73, 33.80, '相場を調べず<br><em>低単価で受注</em>したこと', 370, 1],
+  [33.80, 34.70, '相場を調べずに', 270],
+  [34.70, 36.20, '<em>15分の1</em>の価格で', 295],
+  [36.20, 37.77, 'LP案件を受注してしまったことも', 582],
+  [37.77, 38.80, 'その後の対策として', 358],
+  [43.40, 45.03, 'などで低単価を回避できました', 600],
+  [45.03, 46.60, 'そもそも私がこれらの失敗を', 498],
+  [46.60, 47.73, '経験してしまったのは', 488],
+  [47.73, 49.00, '<em>独学で</em>クライアントワークを', 498],
+  [49.00, 50.17, '実践してしまったからです', 488],
+  [50.17, 51.80, 'トラブルなんてそもそも起きないでしょ', 686],
+  [51.80, 52.80, 'っていう風に思ってても', 372],
+  [52.80, 54.10, '個人でお仕事をする場合は', 456],
+  [54.10, 55.60, '責任は全て自分になるので', 466],
+  [55.60, 56.63, 'いざという時のために', 382],
+  [56.63, 58.03, '<em>サポートしてもらえる環境</em>に', 498],
+  [58.03, DUR, '身を置くことが大切です', 372],
+];
+
+// 上部見出し: [開始, 終了, キッカー, 見出し]
+const titles = [
+  [0.00, 5.03, '独立して経験した', 'トラブル3選'],
+  [6.07, 17.93, 'トラブル①', '外注先に飛ばれた'],
+  [19.13, 30.73, 'トラブル②', '返答が遅すぎた'],
+  [31.73, 45.03, 'トラブル③', '低単価で受注した'],
+  [45.03, 55.60, '振り返ると', '失敗の原因は'],
+  [55.60, DUR, 'だからこそ', '大切なこと'],
+];
+
+// 章カード: [開始, 終了, 番号, 日本語, サブ]
+const cards = [
+  [5.03, 6.07, '01', '1つ目のトラブルは', '外注先に飛ばれた'],
+  [17.93, 19.13, '02', '2つ目のトラブルは', '返答が遅すぎた'],
+  [30.73, 31.73, '03', '3つ目のトラブルは', '低単価で受注した'],
+];
+
+// 対策パネル: [開始, 終了, 見出し, [行...], 何行目まで点灯]
+const panels = [
+  [11.73, 14.03, 'トラブル①の<b>対策</b>', ['ココナラなどのサービス経由で依頼', 'デモ課題を納品してもらい技術を確認'], 1],
+  [14.03, 16.20, 'トラブル①の<b>対策</b>', ['ココナラなどのサービス経由で依頼', 'デモ課題を納品してもらい技術を確認'], 2],
+  [24.57, 27.37, 'トラブル②の<b>対策</b>', ['返信が遅すぎる方は予めお断りする', '確認いただく際に期限を設ける'], 1],
+  [27.37, 28.77, 'トラブル②の<b>対策</b>', ['返信が遅すぎる方は予めお断りする', '確認いただく際に期限を設ける'], 2],
+  [38.80, 40.23, 'トラブル③の<b>対策</b>', ['個人のデザイナーの競合比較', 'セット販売／付加価値の提供などで単価をアップ'], 1],
+  [40.23, 43.40, 'トラブル③の<b>対策</b>', ['個人のデザイナーの競合比較', 'セット販売／付加価値の提供などで単価をアップ'], 2],
+];
+
+// 強調: [開始, 終了, HTML]
+const punches = [
+  [34.70, 36.20, '相場の<br><span class="box">15分の1</span>'],
+];
+
+const root = document.getElementById('root');
+const items = [];
+const add = (t0, t1, html, cls, style = '') => {
+  const d = document.createElement('div'); d.className = 'el ' + cls; d.innerHTML = html; d.style.cssText = style;
+  root.appendChild(d); items.push({ t0, t1, d }); return d;
+};
+for (const [a, b, h, w, two] of caps) {
+  const minW = Math.min(1060, Math.round(w / S + 70));
+  add(a, b, `<span>${h}</span>`, 'pill' + (two ? ' two' : ''), `min-width:${minW}px`);
+}
+for (const [a, b, k, t] of titles) add(a, b, `<span class="k">${k}</span><span class="t">${t}</span>`, 'title');
+for (const [a, b, hd, rows, on] of panels)
+  add(a, b, `<div class="hd">${hd}</div>` + rows.map((r, i) => `<div class="row ${i < on ? '' : 'dim'}"><span class="tag">0${i + 1}</span><span>${r}</span></div>`).join(''), 'panel');
+for (const [a, b, no, jp, sub] of cards)
+  add(a, b, `<div class="en">TROUBLE</div><div class="no">${no}</div><div class="jp">${jp}</div><div class="sub"><span>${sub}</span></div>`, 'card');
+for (const [a, b, h] of punches) add(a, b, h, 'punch');
+
+const FR = 1 / 30;
+window.seek = (t) => {
+  for (const it of items) {
+    // 1フレーム手前から表示して、元字幕が一瞬でも見えないようにする
+    const on = t >= it.t0 - FR && t < it.t1 - FR * 0.5;
+    it.d.style.display = on ? (it.d.classList.contains('pill') ? 'flex' : 'block') : 'none';
+    if (on && (it.d.classList.contains('title') || it.d.classList.contains('punch'))) {
+      const p = Math.min(1, (t - it.t0) / 0.3), e = 1 - Math.pow(1 - p, 3);
+      it.d.style.opacity = Math.min(1, p * 2.5);
+      it.d.style.transform = `translateY(${(1 - e) * 40}px)`;
+    }
+  }
+  document.getElementById('prog').style.width = (t / DUR * 1080) + 'px';
+};
+seek(0);
+</script>
+</body>
+</html>
