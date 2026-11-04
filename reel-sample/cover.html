@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@500;700&family=Cormorant+Garamond:wght@500;600&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@500;700&family=Cormorant+Garamond:wght@500;600&display=block" rel="stylesheet">
 <!--
   リール表紙（1080×1920）
   ?theme=blue|sage|gray|rose|night  &photo=写真のパス  &kick=ラベル  &title=1行目|2行目|3行目
@@ -34,28 +34,27 @@ body{position:relative;font-family:var(--sans);color:#fff;font-variant-numeric:l
 body[data-theme=night] .moon{display:block}
 
 /* REEL POST ラベル */
-.lab{position:absolute;left:0;right:54px;top:300px;display:flex;align-items:center;gap:22px}
-.lab .ln{flex:1;height:2px;background:rgba(255,255,255,.85)}
-.lab .st{width:34px;height:34px;margin-left:-10px}
-.lab .tx{font-family:var(--en);font-weight:500;font-size:70px;letter-spacing:.02em;line-height:1;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.08)}
+.lab{position:absolute;left:0;top:331px;width:1024px;height:70px}
+.lab .ln{position:absolute;left:0;top:34px;width:512px;height:2px;background:#fff}
+.lab .st{position:absolute;left:512px;top:0;width:70px;height:70px;padding:17px}
+.lab .tx{position:absolute;right:0;top:-2px;font-family:var(--en);font-weight:500;font-size:67px;line-height:1;color:#fff}
 
 /* 写真カード */
-.card{position:absolute;left:54px;right:59px;top:475px;height:925px;border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(30,20,20,.25)}
-.card .ph{position:absolute;inset:-20px;background-size:cover;background-position:center 40%;filter:blur(3px) saturate(.85)}
-.card .dk{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,24,22,.58),rgba(28,24,22,.66))}
-.card .gr{position:absolute;inset:0;background-image:var(--noise);opacity:.35}
+.card{position:absolute;left:57px;top:496px;width:967px;height:928px;border-radius:31px;overflow:hidden;background:rgba(255,255,255,.95)}
+.card .ph{position:absolute;inset:0;background-size:cover;background-position:center 40%;opacity:.85}
+.card .dk{position:absolute;inset:0;background:#000;opacity:.65}
+.card .gr{display:none}
 .card svg.fr{position:absolute;inset:0;width:100%;height:100%}
 
-.kick{position:absolute;left:0;right:0;top:150px;text-align:center}
-.kick span{display:inline-block;border:2.5px solid rgba(255,255,255,.9);border-radius:999px;padding:12px 46px 16px;font-size:48px;font-weight:500;letter-spacing:.08em;color:#fff}
-.ttl{position:absolute;left:0;right:0;top:285px;text-align:center;font-family:var(--serif);font-weight:600;font-size:128px;line-height:1.16;letter-spacing:.01em;color:#fff;
-  text-shadow:0 4px 18px rgba(0,0,0,.35)}
+.kick{position:absolute;left:0;right:0;top:126px;text-align:center}
+.kick span{display:inline-flex;align-items:center;height:97px;border:1.5px solid #fff;border-radius:999px;padding:0 36px 4px;font-size:63px;font-weight:500;letter-spacing:-.05em;color:#fff}
+.ttl{position:absolute;left:0;right:0;top:253px;text-align:center;font-family:"Shippori Mincho",var(--serif);font-weight:500;font-size:133px;line-height:1.1;letter-spacing:-.08em;color:#fff}
 
 /* プレーヤー */
-.bar{position:absolute;left:54px;right:59px;top:1472px;height:2px;background:rgba(255,255,255,.75)}
-.ctrl{position:absolute;left:0;right:0;top:1510px;display:flex;justify-content:center;gap:76px;align-items:center}
-.ctrl svg{width:46px;height:46px;fill:#fff;opacity:.85}
-.ctrl svg.play{width:58px;height:58px}
+.bar{position:absolute;left:54px;width:967px;top:1496px;height:2px;background:#fff}
+.ctrl{position:absolute;left:271px;width:519px;top:1536px;height:49px;display:flex;justify-content:space-between;align-items:center}
+.ctrl svg{width:40px;height:40px;fill:#fff;opacity:.9}
+.ctrl svg.play{width:49px;height:49px}
 body[data-theme=blue] .ctrl svg, body[data-theme=sage] .ctrl svg{opacity:.55}
 </style>
 </head>
@@ -69,13 +68,13 @@ body[data-theme=blue] .ctrl svg, body[data-theme=sage] .ctrl svg{opacity:.55}
 <div class="card">
   <div class="ph" id="ph"></div><div class="dk"></div><div class="gr"></div>
   <!-- 角がへこんだ細い枠＋四隅の✦ -->
-  <svg class="fr" viewBox="0 0 967 925">
-    <path d="M70,24 H897 A46,46 0 0 0 943,70 V855 A46,46 0 0 0 897,901 H70 A46,46 0 0 0 24,855 V70 A46,46 0 0 0 70,24 Z" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.5"/>
+  <svg class="fr" viewBox="0 0 967 928" style="position:absolute;inset:0;width:967px;height:928px">
+    <path d="M59,38 H900 A40,40 0 0 0 938,76 V852 A40,40 0 0 0 900,890 H59 A40,40 0 0 0 19,852 V76 A40,40 0 0 0 59,38 Z" fill="none" stroke="#fff" stroke-width="2" opacity=".78"/>
     <g fill="#fff">
-      <path transform="translate(40,40) scale(15)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
-      <path transform="translate(927,40) scale(15)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
-      <path transform="translate(40,885) scale(15)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
-      <path transform="translate(927,885) scale(15)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+      <path transform="translate(48,67) scale(13)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+      <path transform="translate(908,67) scale(13)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+      <path transform="translate(46,861) scale(13)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
+      <path transform="translate(908,861) scale(13)" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
     </g>
   </svg>
   <div class="kick"><span id="kick"></span></div>
