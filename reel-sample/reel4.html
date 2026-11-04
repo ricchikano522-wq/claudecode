@@ -10,9 +10,9 @@
 -->
 <style>
 :root{
-  --ivory:#FBF8F3; --ivory2:#F3ECE3; --line:rgba(110,92,82,.38);
+  --ivory:#FBF8F3; --ivory2:#F3ECE3; --line:rgba(130,90,75,.42);
   --slate:#3B3F42; --sub:#6E7477;
-  --rose:#B5776F; --rose-soft:#D8AFA6; --sage:#9FB1AE; --blue:#A9B9C3; --terra:#C08A6E; --peach:#EDC3A5;
+  --rose:#BA685C; --rose-soft:#E2A596; --sage:#8DB0A5; --blue:#97B5C7; --terra:#C9805A; --peach:#F3B892;
   --serif:"Shippori Mincho B1","Yu Mincho","YuMincho",serif;
   --sans:"Yu Gothic","YuGothic","Zen Kaku Gothic New",sans-serif;
   --en:"Cormorant Garamond",serif;
@@ -36,7 +36,7 @@ body.preview{background:#777}
 
 /* ===== 話しテロップ ===== */
 .pill{left:50%;transform:translateX(-50%);top:1012px;min-height:100px;display:flex;align-items:center;justify-content:center;
-  background:var(--ivory);border-radius:14px;padding:16px 48px 20px;text-align:center;white-space:nowrap;
+  background:var(--ivory);border-radius:56px;padding:16px 52px 20px;text-align:center;white-space:nowrap;
   font-weight:700;font-size:46px;line-height:1.4;letter-spacing:.04em;color:var(--slate);
   box-shadow:0 10px 30px rgba(60,40,30,.22)}
 .pill.two{top:982px;min-height:130px}
@@ -47,7 +47,7 @@ body.preview{background:#777}
 .title{left:50%;transform:translateX(-50%);top:176px;min-width:640px;background:rgba(251,248,243,.95);border-radius:10px;
   padding:30px 64px 36px;text-align:center;box-shadow:0 12px 34px rgba(60,40,30,.2)}
 .title > div{position:relative;z-index:7}
-.lab{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--en);font-weight:600;font-size:26px;letter-spacing:.26em;color:#8C9A9B}
+.lab{display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--en);font-weight:600;font-size:26px;letter-spacing:.26em;color:#7A999B}
 .lab i{display:block;width:90px;height:1.5px;background:var(--line)}
 .kick{display:inline-flex;align-items:center;gap:12px;margin-top:14px;font-size:30px;font-weight:700;color:var(--slate);
   background:var(--ivory2);padding:6px 22px 8px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line)}
@@ -86,7 +86,7 @@ body.preview{background:#777}
 /* ===== 強調（ノイズの円＋明朝） ===== */
 .punch{left:0;right:0;top:470px;height:600px}
 .punch .orb{position:absolute;left:50%;top:0;width:560px;height:560px;margin-left:-280px;border-radius:50%;
-  background:radial-gradient(circle at 38% 34%,#F7E3D3 0%,var(--peach) 45%,var(--rose-soft) 100%);opacity:.96}
+  background:radial-gradient(circle at 38% 34%,#F9E1CE 0%,var(--peach) 45%,var(--rose-soft) 100%);opacity:.96}
 .punch .orb::after{content:"";position:absolute;inset:0;border-radius:50%;background-image:var(--noise);opacity:.8}
 .punch .t{position:absolute;left:0;right:0;top:150px;text-align:center;z-index:3}
 .punch .s{font-size:44px;font-weight:700;color:var(--slate);letter-spacing:.1em}
@@ -110,14 +110,14 @@ body.preview{background:#777}
       <feComposite in="dk" in2="g" operator="in" result="dkin"/>
       <feMerge><feMergeNode in="g"/><feMergeNode in="dkin"/></feMerge>
     </filter>
-    <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D6C6"/><stop offset=".6" stop-color="#8FA79E"/><stop offset="1" stop-color="#5F7C74" stop-opacity=".6"/></linearGradient>
-    <linearGradient id="leafG2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4D3B8"/><stop offset="1" stop-color="#B8A07C" stop-opacity=".55"/></linearGradient>
-    <linearGradient id="mugG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFDF9"/><stop offset=".55" stop-color="#EFE4D8"/><stop offset="1" stop-color="#C9A792"/></linearGradient>
-    <linearGradient id="mugIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A5E48"/><stop offset="1" stop-color="#B98568"/></linearGradient>
-    <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E9DA6"/><stop offset="1" stop-color="#55626B"/></linearGradient>
+    <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#BFD8C2"/><stop offset=".6" stop-color="#7DA796"/><stop offset="1" stop-color="#4E7A6C" stop-opacity=".6"/></linearGradient>
+    <linearGradient id="leafG2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBCFA6"/><stop offset="1" stop-color="#C29A68" stop-opacity=".55"/></linearGradient>
+    <linearGradient id="mugG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFDF9"/><stop offset=".55" stop-color="#EFE4D8"/><stop offset="1" stop-color="#CC9C7E"/></linearGradient>
+    <linearGradient id="mugIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E553B"/><stop offset="1" stop-color="#C47E5A"/></linearGradient>
+    <linearGradient id="lapG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#839DAD"/><stop offset="1" stop-color="#4A6070"/></linearGradient>
     <linearGradient id="lapScr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9EEF0"/><stop offset="1" stop-color="#B9C6CD"/></linearGradient>
     <linearGradient id="baseG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C7CED2"/><stop offset="1" stop-color="#8D989E"/></linearGradient>
-    <radialGradient id="orbG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#F8E5D4"/><stop offset="1" stop-color="#E6A98A" stop-opacity=".75"/></radialGradient>
+    <radialGradient id="orbG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FAE0CB"/><stop offset="1" stop-color="#EC9D77" stop-opacity=".75"/></radialGradient>
     <path id="spark" d="M0,-1 C.08,-.08 .08,-.08 1,0 C.08,.08 .08,.08 0,1 C-.08,.08 -.08,.08 -1,0 C-.08,-.08 -.08,-.08 0,-1Z"/>
   </defs>
 </svg>
@@ -128,18 +128,18 @@ body.preview{background:#777}
       <circle cx="840" cy="210" r="150" fill="url(#orbG)" opacity=".85"/>
       <circle cx="190" cy="520" r="110" fill="url(#orbG)" opacity=".6"/>
       <!-- 葉 -->
-      <g transform="translate(70,330) rotate(-28)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/><path d="M8,0 L320,0" stroke="#5F7C74" stroke-width="3" opacity=".45"/></g>
+      <g transform="translate(70,330) rotate(-28)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/><path d="M8,0 L320,0" stroke="#4E7A6C" stroke-width="3" opacity=".45"/></g>
       <g transform="translate(120,470) rotate(-62)"><path d="M0,0 C60,-80 170,-80 240,0 C170,80 60,80 0,0Z" fill="url(#leafG2)"/></g>
       <g transform="translate(960,560) rotate(200)"><path d="M0,0 C80,-110 230,-110 330,0 C230,110 80,110 0,0Z" fill="url(#leafG)"/></g>
       <!-- ノートPC -->
       <g transform="translate(330,250)">
         <rect x="20" y="0" width="420" height="270" rx="18" fill="url(#lapG)"/>
         <rect x="40" y="20" width="380" height="230" rx="8" fill="url(#lapScr)"/>
-        <rect x="70" y="56" width="170" height="16" rx="8" fill="#B5776F" opacity=".7"/>
-        <rect x="70" y="90" width="250" height="10" rx="5" fill="#8C9A9B" opacity=".6"/>
-        <rect x="70" y="112" width="210" height="10" rx="5" fill="#8C9A9B" opacity=".6"/>
-        <rect x="70" y="150" width="110" height="70" rx="6" fill="#EDC3A5"/>
-        <rect x="196" y="150" width="110" height="70" rx="6" fill="#9FB1AE"/>
+        <rect x="70" y="56" width="170" height="16" rx="8" fill="#BA685C" opacity=".7"/>
+        <rect x="70" y="90" width="250" height="10" rx="5" fill="#7A999B" opacity=".6"/>
+        <rect x="70" y="112" width="210" height="10" rx="5" fill="#7A999B" opacity=".6"/>
+        <rect x="70" y="150" width="110" height="70" rx="6" fill="#F3B892"/>
+        <rect x="196" y="150" width="110" height="70" rx="6" fill="#8DB0A5"/>
         <path d="M-30,280 L490,280 L460,312 L0,312Z" fill="url(#baseG)"/>
       </g>
       <!-- マグ -->
@@ -153,9 +153,9 @@ body.preview{background:#777}
     </g>
     <!-- 湯気と✦は線で -->
     <path d="M770,330 C750,300 790,280 770,250 M810,325 C790,290 835,270 812,232" fill="none" stroke="#B5A69A" stroke-width="5" stroke-linecap="round" opacity=".6"/>
-    <use href="#spark" transform="translate(300,170) scale(26)" fill="#B5776F"/>
-    <use href="#spark" transform="translate(340,215) scale(13)" fill="#B5776F"/>
-    <use href="#spark" transform="translate(980,330) scale(18)" fill="#8C9A9B"/>
+    <use href="#spark" transform="translate(300,170) scale(26)" fill="#BA685C"/>
+    <use href="#spark" transform="translate(340,215) scale(13)" fill="#BA685C"/>
+    <use href="#spark" transform="translate(980,330) scale(18)" fill="#7A999B"/>
   </svg>
 </template>
 
@@ -214,9 +214,9 @@ const titles = [
 
 // 章カード: [開始, 終了, 番号, 日本語, サブ, 背景色3つ]
 const cards = [
-  [5.03, 6.07, '01', '1つ目のトラブル', '外注先に飛ばれた', ['#C9D6CF', '#F1DCC8', '#AFC2C4']],
-  [17.93, 19.13, '02', '2つ目のトラブル', '返答が遅すぎた', ['#E8CFC3', '#F4E7D6', '#BFC9CF']],
-  [30.73, 31.73, '03', '3つ目のトラブル', '低単価で受注した', ['#D9C2B0', '#EFE3D2', '#C7D0C4']],
+  [5.03, 6.07, '01', '1つ目のトラブル', '外注先に飛ばれた', ['#BBD4C8', '#F5D3B6', '#9EBFC6']],
+  [17.93, 19.13, '02', '2つ目のトラブル', '返答が遅すぎた', ['#EDC1B0', '#F7E2CC', '#AEC4D2']],
+  [30.73, 31.73, '03', '3つ目のトラブル', '低単価で受注した', ['#E0B89C', '#F3DEC6', '#B6CFBC']],
 ];
 
 // 対策パネル: [開始, 終了, 見出し, [行...], 何行目まで点灯]
@@ -239,7 +239,7 @@ const add = (t0, t1, html, cls, style = '', anim = false) => {
 };
 for (const [a, b, h, w, two] of caps) {
   const minW = Math.min(1060, Math.round(w / S + 80));
-  add(a, b, `<span>${h}</span>` + stars(), 'pill grain frame' + (two ? ' two' : ''), `min-width:${minW}px`);
+  add(a, b, `<span>${h}</span>`, 'pill grain' + (two ? ' two' : ''), `min-width:${minW}px`);
 }
 for (const [a, b, lab, k, t] of titles)
   add(a, b, `<div class="lab"><i></i>${lab}<i></i></div><div><span class="kick"><b>✦</b>${k}<b>✦</b></span></div><div><span class="ttl">${t}</span></div>` + stars(),
@@ -257,7 +257,7 @@ for (const [a, b, no, jp, sub, c] of cards)
     <div class="jp">${jp}</div><div class="sub"><span><b>✦</b>${sub}<b>✦</b></span></div>${ill}`, 'card');
 for (const [a, b] of punches)
   add(a, b, `<div class="orb"></div><div class="t"><div class="s">相場の</div><div class="b">15<small>分の</small>1</div></div>
-    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#B5776F"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#8C9A9B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#B5776F"/></svg>`,
+    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`,
     'punch', '', true);
 
 const FR = 1 / 30;
