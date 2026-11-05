@@ -171,6 +171,7 @@ const DUR = TL.duration;
 const S = (TL.srcWidth || 1080) / 1080; // 元動画px → 出力px は 1/S 倍
 const STAR = '<svg viewBox="-1 -1 2 2"><use href="#spark" fill="currentColor"/></svg>';
 const stars = () => ['tl','tr','bl','br'].map(p => `<span class="star ${p}">${STAR}</span>`).join('');
+if (TL.css) { const st = document.createElement('style'); st.textContent = TL.css; document.head.appendChild(st); }
 const caps = TL.caps || [], titles = TL.titles || [], cards = TL.cards || [], panels = TL.panels || [], punches = TL.punches || [];
 
 // ---------- 動きの部品 ----------
@@ -268,25 +269,26 @@ function animTitle(it, t) {
 }
 
 // ---------- 対策パネル ----------
-for (const [a, sw, b, hd, rows] of panels) {
+for (const [a, sw, b, hd, rows, style] of panels) {
+  // sw：2行目が点灯する時刻（数値）か、各行が点灯する時刻の配列（1行目から）
   const it = add(a, b, `<div class="hd"><span class="kick"><b>✦</b>${hd}<b>✦</b></span></div>` +
-    rows.map((r, i) => `<div class="prow"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(), 'panel grain frame');
-  it.kind = 'panel'; it.sw = sw; it.kick = it.d.querySelector('.kick'); it.rows = [...it.d.querySelectorAll('.prow')];
+    rows.map((r, i) => `<div class="prow"><span class="no">0${i + 1}</span><span class="tx">${r}</span></div>`).join('') + stars(), 'panel grain frame', style || '');
+  it.kind = 'panel'; it.on = Array.isArray(sw) ? sw : [a, sw]; it.kick = it.d.querySelector('.kick'); it.rows = [...it.d.querySelectorAll('.prow')];
   it.nos = [...it.d.querySelectorAll('.no')]; it.stars = [...it.d.querySelectorAll('.star')];
 }
 function animPanel(it, t) {
   it.d.style.transform = `scale(${1 + 0.04 * (1 - ease(clamp((t - it.t0) / 0.3)))})`;
   const kp = ease(clamp((t - it.t0 - 0.05) / 0.3));
   it.kick.style.opacity = kp; it.kick.style.transform = `translateY(${(1 - kp) * 12}px)`;
-  // 1行目：左からすっと
-  const r0 = ease(clamp((t - it.t0 - 0.15) / 0.4));
-  it.rows[0].style.opacity = r0; it.rows[0].style.transform = `translateX(${(1 - r0) * -46}px)`;
-  it.nos[0].style.transform = `scale(${0.6 + 0.4 * back(clamp((t - it.t0 - 0.2) / 0.4))})`;
-  // 2行目：先に薄く出て、話題が移ったら点灯
-  const r1 = ease(clamp((t - it.t0 - 0.35) / 0.4)), on = ease(clamp((t - it.sw) / 0.35));
-  it.rows[1].style.opacity = r1 * (0.3 + 0.7 * on);
-  it.rows[1].style.transform = `translateX(${(1 - r1) * -46 + Math.sin(on * Math.PI) * 10}px)`;
-  it.nos[1].style.transform = `scale(${t >= it.sw ? 0.6 + 0.4 * back(clamp((t - it.sw) / 0.4)) : 1})`;
+  // 各行：左からすっと入り、まだ話していない行は薄く。話題が移ったら点灯して番号がはずむ
+  it.rows.forEach((row, i) => {
+    const r = ease(clamp((t - it.t0 - 0.15 - i * 0.2) / 0.4));
+    const lit = it.on[i] == null ? 1 : (it.on[i] <= it.t0 + 0.01 ? 1 : ease(clamp((t - it.on[i]) / 0.35)));
+    row.style.opacity = r * (0.3 + 0.7 * lit);
+    row.style.transform = `translateX(${(1 - r) * -46 + (it.on[i] > it.t0 + 0.01 ? Math.sin(lit * Math.PI) * 10 : 0)}px)`;
+    const st = it.on[i] > it.t0 + 0.01 ? it.on[i] : it.t0 + 0.2 + i * 0.2;
+    it.nos[i].style.transform = `scale(${t >= st ? 0.6 + 0.4 * back(clamp((t - st) / 0.4)) : 1})`;
+  });
   twinkle(it.stars, t);
 }
 
@@ -318,9 +320,9 @@ function animCard(it, t) {
 }
 
 // ---------- 強調（15分の1） ----------
-for (const [a, b, small, big] of punches) {
+for (const [a, b, small, big, style] of punches) {
   const it = add(a, b, `<div class="orb"></div><div class="t"><div class="s">${small || ''}</div><div class="b">${big}</div></div>
-    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`, 'punch');
+    <svg class="stars" viewBox="0 0 1080 600"><use href="#spark" transform="translate(300,70) scale(30)" fill="#BA685C"/><use href="#spark" transform="translate(800,470) scale(22)" fill="#7A999B"/><use href="#spark" transform="translate(760,90) scale(14)" fill="#BA685C"/></svg>`, 'punch', style || '');
   Object.assign(it, { kind: 'punch', orb: it.d.querySelector('.orb'), sc: split(it.d.querySelector('.s')), bc: split(it.d.querySelector('.b')), st: it.d.querySelector('svg.stars') });
 }
 function animPunch(it, t) {
