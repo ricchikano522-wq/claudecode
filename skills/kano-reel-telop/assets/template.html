@@ -96,6 +96,13 @@ body.preview{background:#777}
 .punch .b small{font-size:96px}
 .punch .stars{position:absolute;inset:0}
 
+
+/* ===== 縦書きの字幕テロップ（元動画の縦書き字幕を同じ場所で置き換える） ===== */
+.vpill{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;background:var(--ivory);border-radius:999px;
+  color:var(--slate);font-weight:700;letter-spacing:.06em;line-height:1;box-shadow:0 10px 30px rgba(60,40,30,.22);z-index:3}
+.vpill > span:first-child{position:relative;z-index:7;white-space:nowrap}
+.vpill em{font-style:normal;color:#B5513F;
+  background:linear-gradient(90deg,transparent 6%,rgba(243,178,140,.62) 6%,rgba(243,178,140,.62) 34%,transparent 34%);background-repeat:no-repeat;background-size:100% 0%}
 .prog{position:absolute;left:0;bottom:0;height:6px;background:var(--rose);display:block;opacity:.9}
 </style>
 </head>
@@ -172,6 +179,7 @@ const S = (TL.srcWidth || 1080) / 1080; // 元動画px → 出力px は 1/S 倍
 const STAR = '<svg viewBox="-1 -1 2 2"><use href="#spark" fill="currentColor"/></svg>';
 const stars = () => ['tl','tr','bl','br'].map(p => `<span class="star ${p}">${STAR}</span>`).join('');
 if (TL.css) { const st = document.createElement('style'); st.textContent = TL.css; document.head.appendChild(st); }
+const vcaps = TL.vcaps || [];
 const caps = TL.caps || [], titles = TL.titles || [], cards = TL.cards || [], panels = TL.panels || [], punches = TL.punches || [];
 
 // ---------- 動きの部品 ----------
@@ -248,6 +256,42 @@ function animPill(p, t) {
   for (const { em, first } of p.ems) {
     const st = p.t0 + 0.03 + first * 0.022 + 0.22;
     em.style.backgroundSize = `${ease(clamp((t - st) / 0.35)) * 100}% 100%`;
+  }
+}
+
+
+// ---------- 縦書きの字幕テロップ ----------
+// vcaps: [開始, 終了, [[x0, y0, x1, y1, 文言], ...]]（座標は元動画px・右の列から順に）
+const K = 1 / S;
+let prevCols = [];
+for (const [a, b, cols] of vcaps) {
+  const cur = [];
+  for (const [x0, y0, x1, y1, h] of cols) {
+    const pad = 9, l = (x0 - pad) * K, tp = (y0 - pad) * K, w = (x1 - x0 + pad * 2) * K, hh = (y1 - y0 + pad * 2) * K;
+    const n = [...h.replace(/<[^>]+>/g, '')].length;
+    const fs = Math.max(34, Math.min(w * 0.6, (hh - 40) / (n * 1.06)));
+    const it = add(a, b, `<span>${h}</span>`, 'vpill grain', `left:${l}px;top:${tp}px;width:${w}px;height:${hh}px;font-size:${fs}px`);
+    it.kind = 'vpill'; it.cont = prevCols.some(p => p.h === h && Math.abs(p.b - a) < 0.05);
+    it.chars = split(it.d.firstChild);
+    it.ems = [...it.d.querySelectorAll('em')].map(em => ({ em, first: it.chars.indexOf(em.querySelector('.ch')) }));
+    cur.push({ h, b });
+  }
+  prevCols = cur;
+}
+function animVpill(p, t) {
+  if (p.cont) {
+    p.d.style.transform = '';
+    p.chars.forEach(c => { c.style.opacity = 1; c.style.transform = ''; });
+    p.ems.forEach(({ em }) => em.style.backgroundSize = '100% 100%');
+    return;
+  }
+  // 帯は1コマ目から出して、少し大きい状態から縮む（元の字幕は見えない）
+  p.d.style.transform = `scale(${1 + 0.05 * (1 - ease(clamp((t - p.t0) / 0.3)))})`;
+  chars(p.chars, t, p.t0 + 0.03, 0.022, 0.26, 0);
+  p.chars.forEach((c, i) => { const e = ease(clamp((t - p.t0 - 0.03 - i * 0.022) / 0.26)); c.style.transform = `translateX(${(1 - e) * -14}px)`; });
+  for (const { em, first } of p.ems) {
+    const st = p.t0 + 0.03 + first * 0.022 + 0.22;
+    em.style.backgroundSize = `100% ${ease(clamp((t - st) / 0.35)) * 100}%`;
   }
 }
 
@@ -336,13 +380,13 @@ function animPunch(it, t) {
 }
 
 const FR = 1 / 30;
-const anim = { pill: animPill, title: animTitle, panel: animPanel, card: animCard, punch: animPunch };
+const anim = { vpill: animVpill, pill: animPill, title: animTitle, panel: animPanel, card: animCard, punch: animPunch };
 window.seek = (t) => {
   if (!measured) measure();
   for (const it of items) {
     // 1フレーム手前から表示して、元字幕が一瞬でも見えないようにする
     const on = t >= it.t0 - FR && t < it.t1 - FR * 0.5;
-    it.d.style.display = on ? (it.kind === 'pill' ? 'flex' : 'block') : 'none';
+    it.d.style.display = on ? (it.kind === 'pill' || it.kind === 'vpill' ? 'flex' : 'block') : 'none';
     if (on) anim[it.kind](it, t);
   }
   document.getElementById('prog').style.width = (t / DUR * 1080) + 'px';
